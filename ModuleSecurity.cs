@@ -6,9 +6,9 @@ using System.Security.Principal;
 using System.Web;
 
 using Nancy;
-using Nancy.Authentication.Ntlm.Protocol;
-using System.DirectoryServices.AccountManagement;
 using Nancy.Cookies;
+
+using Nancy.Authentication.Ntlm.Protocol;
 using Nancy.Authentication.Ntlm.Security;
 
 namespace Nancy.Authentication.Ntlm
