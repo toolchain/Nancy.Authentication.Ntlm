@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Protocol\Type2Message.cs" />
-    <Compile Include="Security\API.cs" />
+    <Compile Include="Security\EndPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Cryptography\Context.cs" />
     <Compile Include="Cryptography\Hash.cs" />
@@ -68,6 +68,7 @@
     <Compile Include="Security\BufferHelper.cs" />
     <Compile Include="Security\BufferType.cs" />
     <Compile Include="Security\Buffer.cs" />
+    <Compile Include="Security\Common.cs" />
     <Compile Include="Security\Handle.cs" />
     <Compile Include="Security\Integer.cs" />
     <Compile Include="Security\State.cs" />

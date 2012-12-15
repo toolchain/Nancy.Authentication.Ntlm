@@ -54,7 +54,7 @@ namespace Nancy.Authentication.Ntlm
                                         case 1:
                                             // Message of type 1 was received
                                             var stateId = Guid.NewGuid().ToString();
-                                            API.IsServerChallengeAcquired(clientMessage, out serverState);
+                                            EndPoint.IsServerChallengeAcquired(clientMessage, out serverState);
 
                                             Unfinished.Add(stateId, serverState);
 
@@ -69,7 +69,7 @@ namespace Nancy.Authentication.Ntlm
                                             serverState = Unfinished[module.Request.Cookies["NTLM"]];
                                             Unfinished.Remove(module.Request.Cookies["NTLM"]);
 
-                                            if (API.IsClientResponseValid(clientMessage, ref serverState))
+                                            if (EndPoint.IsClientResponseValid(clientMessage, ref serverState))
                                             {
                                                 Type3Message type3Message = new Type3Message(clientMessage);
                                                 module.Context.Response.Headers.Add("Authorization", "NTLM " + Convert.ToBase64String(clientMessage));
