@@ -7,20 +7,20 @@ using System.Runtime.InteropServices;
 namespace Nancy.Authentication.Ntlm.Security
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct SecurityBuffer : IDisposable
+    public struct Buffer : IDisposable
     {
         public int cbBuffer;
         public int BufferType;
         public IntPtr pvBuffer;
 
-        public SecurityBuffer(int bufferSize)
+        public Buffer(int bufferSize)
         {
             cbBuffer = bufferSize;
             BufferType = (int)SecurityBufferType.SECBUFFER_TOKEN;
             pvBuffer = Marshal.AllocHGlobal(bufferSize);
         }
 
-        public SecurityBuffer(byte[] secBufferBytes)
+        public Buffer(byte[] secBufferBytes)
         {
             cbBuffer = secBufferBytes.Length;
             BufferType = (int)SecurityBufferType.SECBUFFER_TOKEN;
@@ -28,7 +28,7 @@ namespace Nancy.Authentication.Ntlm.Security
             Marshal.Copy(secBufferBytes, 0, pvBuffer, cbBuffer);
         }
 
-        public SecurityBuffer(byte[] secBufferBytes, SecurityBufferType bufferType)
+        public Buffer(byte[] secBufferBytes, SecurityBufferType bufferType)
         {
             cbBuffer = secBufferBytes.Length;
             BufferType = (int)bufferType;
