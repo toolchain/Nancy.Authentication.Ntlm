@@ -1,0 +1,40 @@
+# Git related
+*.orig
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+
+# Common
+*.patch
+*.log
+
+# Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
+bin
+obj
+App_Data
+
+# MSTest test results
+TestResults
+
+# NUnit test results
+TestResult.xml
+
+# Visual Studio specific
+csx
+packages
+*.swp
+*.suo
+*.csproj.user
+*.user
+*.cache
+*.ncrunchsolution
+
+# MS SQL specific
+*.mdf
+*_log.ldf
+
+# Third-party tools specific
+_Resharper*
+_TeamCity*
+*StyleCop
