@@ -21,8 +21,9 @@ namespace Nancy.Authentication.Ntlm.Security
         public const int MaximumTokenSize = 12288;
         public const int SecurityCredentialsInbound = 1;
         public const int SuccessfulResult = 0;
+        public const int IntermediateResult = 0x90312;
 
-        public static void AcquireServerToken(byte[] message, out ServerState serverState)
+        public static bool IsServerChallengeAcquired(byte[] message, out State serverState)
         {
             BufferDesciption ClientToken = new BufferDesciption(message);
 
@@ -30,15 +31,16 @@ namespace Nancy.Authentication.Ntlm.Security
             {
                 Integer NewLifeTime = new Integer(0);
                 uint NewContextAttribute = 0;
+                int result;
 
-                serverState = new ServerState()
+                serverState = new State()
                 {
                     Credentials = new Handle(0),
                     Context = new Handle(0),
                     Token = new BufferDesciption(API.MaximumTokenSize)
                 };
 
-                AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name,
+                result = AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name,
                     "NTLM",
                     API.SecurityCredentialsInbound,
                     IntPtr.Zero,
@@ -48,23 +50,37 @@ namespace Nancy.Authentication.Ntlm.Security
                     ref serverState.Credentials,
                     ref NewLifeTime);
 
-                AcceptSecurityContext(ref serverState.Credentials,      // [in] handle to the credentials
-                    IntPtr.Zero,                                        // [in/out] handle of partially formed context.  Always NULL the first time through
-                    ref ClientToken,                                    // [in] pointer to the input buffers
-                    API.StandardContextAttributes,                      // [in] required context attributes
-                    API.SecurityNativeDataRepresentation,               // [in] data representation on the target
-                    out serverState.Context,                            // [in/out] receives the new context handle    
-                    out serverState.Token,                              // [in/out] pointer to the output buffers
-                    out NewContextAttribute,                            // [out] receives the context attributes        
-                    out NewLifeTime);                                   // [out] receives the life span of the security context
+                if (result != API.SuccessfulResult)
+                {
+                    // Credentials acquire operation failed.
+                    return false;
+                }
+
+                result = AcceptSecurityContext(ref serverState.Credentials, // [in] handle to the credentials
+                    IntPtr.Zero,                                            // [in/out] handle of partially formed context.  Always NULL the first time through
+                    ref ClientToken,                                        // [in] pointer to the input buffers
+                    API.StandardContextAttributes,                          // [in] required context attributes
+                    API.SecurityNativeDataRepresentation,                   // [in] data representation on the target
+                    out serverState.Context,                                // [in/out] receives the new context handle    
+                    out serverState.Token,                                  // [in/out] pointer to the output buffers
+                    out NewContextAttribute,                                // [out] receives the context attributes        
+                    out NewLifeTime);                                       // [out] receives the life span of the security context
+
+                if (result != API.IntermediateResult)
+                {
+                    // Client challenge issue operation failed.
+                    return false;
+                }
             }
             finally
             {
                 ClientToken.Dispose();
             }
+
+            return true;
         }
 
-        public static bool ValidateClientToken(byte[] message, ServerState serverState)
+        public static bool IsClientResponseValid(byte[] message, ref State serverState)
         {
             BufferDesciption ClientToken = new BufferDesciption(message);
 
@@ -72,8 +88,9 @@ namespace Nancy.Authentication.Ntlm.Security
             {
                 Integer NewLifeTime = new Integer(0);
                 uint NewContextAttribute = 0;
+                int result;
 
-                int ss = API.AcceptSecurityContext(ref serverState.Credentials, // [in] handle to the credentials
+                result = API.AcceptSecurityContext(ref serverState.Credentials, // [in] handle to the credentials
                     ref serverState.Context,                                    // [in/out] handle of partially formed context.  Always NULL the first time through
                     ref ClientToken,                                            // [in] pointer to the input buffers
                     API.StandardContextAttributes,                              // [in] required context attributes
@@ -83,11 +100,7 @@ namespace Nancy.Authentication.Ntlm.Security
                     out NewContextAttribute,                                    // [out] receives the context attributes        
                     out NewLifeTime);                                           // [out] receives the life span of the security context
 
-                if (ss == API.SuccessfulResult)
-                {
-                    return true;
-                }
-                else
+                if (result != API.SuccessfulResult)
                 {
                     return false;
                 }
@@ -96,6 +109,8 @@ namespace Nancy.Authentication.Ntlm.Security
             {
                 ClientToken.Dispose();
             }
+
+            return true;
         }
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]

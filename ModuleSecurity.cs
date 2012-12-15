@@ -15,7 +15,7 @@ namespace Nancy.Authentication.Ntlm
 {
     public static class ModuleSecurity
     {
-        public static Dictionary<string, ServerState> Unfinished = new Dictionary<string, ServerState>();
+        public static Dictionary<string, State> Unfinished = new Dictionary<string, State>();
 
         private static Response Unauthorized()
         {
@@ -44,7 +44,7 @@ namespace Nancy.Authentication.Ntlm
                             {
                                 byte[] clientMessage = Convert.FromBase64String(AuthorizationString.Substring(5));
 
-                                ServerState serverState = new ServerState();
+                                State serverState = new State();
                                 Response response = new Response();
 
                                 try
@@ -54,7 +54,7 @@ namespace Nancy.Authentication.Ntlm
                                         case 1:
                                             // Message of type 1 was received
                                             var stateId = Guid.NewGuid().ToString();
-                                            API.AcquireServerToken(clientMessage, out serverState);
+                                            API.IsServerChallengeAcquired(clientMessage, out serverState);
 
                                             Unfinished.Add(stateId, serverState);
 
@@ -69,15 +69,15 @@ namespace Nancy.Authentication.Ntlm
                                             serverState = Unfinished[module.Request.Cookies["NTLM"]];
                                             Unfinished.Remove(module.Request.Cookies["NTLM"]);
 
-                                            if (API.ValidateClientToken(clientMessage, serverState))
-                                            {
-                                                return Unauthorized();
-                                            }
-                                            else
+                                            if (API.IsClientResponseValid(clientMessage, ref serverState))
                                             {
                                                 Type3Message type3Message = new Type3Message(clientMessage);
                                                 module.Context.Response.Headers.Add("Authorization", "NTLM " + Convert.ToBase64String(clientMessage));
                                                 module.Context.Response.StatusCode = HttpStatusCode.OK;
+                                            }
+                                            else
+                                            {
+                                                return Unauthorized();
                                             }
 
                                             break;

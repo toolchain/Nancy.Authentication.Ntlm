@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Nancy.Authentication.Ntlm.Security
 {
-    public struct ServerState
+    public struct State
     {
         public Handle Credentials;
         public Handle Context;
