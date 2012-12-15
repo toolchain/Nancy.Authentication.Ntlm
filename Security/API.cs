@@ -22,20 +22,79 @@ namespace Nancy.Authentication.Ntlm.Security
         public const int SecurityCredentialsInbound = 1;
         public const int SuccessfulResult = 0;
 
-        public static void AcquireCredentialsHandle(WindowsIdentity identity, ServerState state)
+        public static void AcquireServerToken(byte[] message, out ServerState serverState)
         {
-            Integer NewLifeTime = new Integer(0);
-            if (AcquireCredentialsHandle(identity.Name,
-                "NTLM",
-                API.SecurityCredentialsInbound,
-                IntPtr.Zero,
-                IntPtr.Zero,
-                0,
-                IntPtr.Zero,
-                ref state.Credentials,
-                ref NewLifeTime) != API.SuccessfulResult)
+            BufferDesciption ClientToken = new BufferDesciption(message);
+
+            try
             {
-                throw new Exception("Couldn't acquire server credentials handle!!!");
+                Integer NewLifeTime = new Integer(0);
+                uint NewContextAttribute = 0;
+
+                serverState = new ServerState()
+                {
+                    Credentials = new Handle(0),
+                    Context = new Handle(0),
+                    Token = new BufferDesciption(API.MaximumTokenSize)
+                };
+
+                AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name,
+                    "NTLM",
+                    API.SecurityCredentialsInbound,
+                    IntPtr.Zero,
+                    IntPtr.Zero,
+                    0,
+                    IntPtr.Zero,
+                    ref serverState.Credentials,
+                    ref NewLifeTime);
+
+                AcceptSecurityContext(ref serverState.Credentials,      // [in] handle to the credentials
+                    IntPtr.Zero,                                        // [in/out] handle of partially formed context.  Always NULL the first time through
+                    ref ClientToken,                                    // [in] pointer to the input buffers
+                    API.StandardContextAttributes,                      // [in] required context attributes
+                    API.SecurityNativeDataRepresentation,               // [in] data representation on the target
+                    out serverState.Context,                            // [in/out] receives the new context handle    
+                    out serverState.Token,                              // [in/out] pointer to the output buffers
+                    out NewContextAttribute,                            // [out] receives the context attributes        
+                    out NewLifeTime);                                   // [out] receives the life span of the security context
+            }
+            finally
+            {
+                ClientToken.Dispose();
+            }
+        }
+
+        public static bool ValidateClientToken(byte[] message, ServerState serverState)
+        {
+            BufferDesciption ClientToken = new BufferDesciption(message);
+
+            try
+            {
+                Integer NewLifeTime = new Integer(0);
+                uint NewContextAttribute = 0;
+
+                int ss = API.AcceptSecurityContext(ref serverState.Credentials, // [in] handle to the credentials
+                    ref serverState.Context,                                    // [in/out] handle of partially formed context.  Always NULL the first time through
+                    ref ClientToken,                                            // [in] pointer to the input buffers
+                    API.StandardContextAttributes,                              // [in] required context attributes
+                    API.SecurityNativeDataRepresentation,                       // [in] data representation on the target
+                    out serverState.Context,                                    // [in/out] receives the new context handle    
+                    out serverState.Token,                                      // [in/out] pointer to the output buffers
+                    out NewContextAttribute,                                    // [out] receives the context attributes        
+                    out NewLifeTime);                                           // [out] receives the life span of the security context
+
+                if (ss == API.SuccessfulResult)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            finally
+            {
+                ClientToken.Dispose();
             }
         }
 
@@ -52,7 +111,7 @@ namespace Nancy.Authentication.Ntlm.Security
             ref Integer ptsExpiry);                         //PTimeStamp //TimeStamp ref
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-        public static extern int AcceptSecurityContext(ref Handle phCredential,
+        private static extern int AcceptSecurityContext(ref Handle phCredential,
             IntPtr phContext,
             ref BufferDesciption pInput,
             uint fContextReq,

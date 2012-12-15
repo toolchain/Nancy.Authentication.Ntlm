@@ -42,73 +42,41 @@ namespace Nancy.Authentication.Ntlm
                             }
                             else
                             {
-                                byte[] message = Convert.FromBase64String(AuthorizationString.Substring(5));
+                                byte[] clientMessage = Convert.FromBase64String(AuthorizationString.Substring(5));
 
-                                var serverState = new ServerState()
-                                {
-                                    Credentials = new Handle(0),
-                                    Context = new Handle(0)
-                                };
-
-                                Integer NewLifeTime = new Integer(0);
-                                BufferDesciption ServerToken = new BufferDesciption(API.MaximumTokenSize);
-                                BufferDesciption ClientToken = new BufferDesciption(message);
-
-                                API.AcquireCredentialsHandle(WindowsIdentity.GetCurrent(), serverState);
-
+                                ServerState serverState = new ServerState();
                                 Response response = new Response();
-                                
-                                int ss = -1;
 
                                 try
                                 {
-                                    uint uNewContextAttr = 0;
-                                    switch (message[8])
+                                    switch (clientMessage[8])
                                     {
                                         case 1:
                                             // Message of type 1 was received
-                                            ss = API.AcceptSecurityContext(ref serverState.Credentials, // [in] handle to the credentials
-                                                IntPtr.Zero,                                            // [in/out] handle of partially formed context.  Always NULL the first time through
-                                                ref ClientToken,                                        // [in] pointer to the input buffers
-                                                API.StandardContextAttributes,                          // [in] required context attributes
-                                                API.SecurityNativeDataRepresentation,                   // [in] data representation on the target
-                                                out serverState.Context,                                // [in/out] receives the new context handle    
-                                                out ServerToken,                                        // [in/out] pointer to the output buffers
-                                                out uNewContextAttr,                                    // [out] receives the context attributes        
-                                                out NewLifeTime);                                       // [out] receives the life span of the security context
-
                                             var stateId = Guid.NewGuid().ToString();
+                                            API.AcquireServerToken(clientMessage, out serverState);
 
                                             Unfinished.Add(stateId, serverState);
 
                                             response.Cookies.Add(new NancyCookie("NTLM", stateId));
                                             response.StatusCode = HttpStatusCode.Unauthorized;
                                             response.Headers.Add("Connection", "Keep-Alive");
-                                            response.Headers.Add("WWW-Authenticate", "NTLM " + Convert.ToBase64String(ServerToken.GetSecBufferByteArray()));
+                                            response.Headers.Add("WWW-Authenticate", "NTLM " + Convert.ToBase64String(serverState.Token.GetSecBufferByteArray()));
+                                            
                                             return response;
                                         case 3:
                                             // Message of type 3 was received
                                             serverState = Unfinished[module.Request.Cookies["NTLM"]];
                                             Unfinished.Remove(module.Request.Cookies["NTLM"]);
 
-                                            ss = API.AcceptSecurityContext(ref serverState.Credentials, // [in] handle to the credentials
-                                                ref serverState.Context,                                // [in/out] handle of partially formed context.  Always NULL the first time through
-                                                ref ClientToken,                                        // [in] pointer to the input buffers
-                                                API.StandardContextAttributes,                          // [in] required context attributes
-                                                API.SecurityNativeDataRepresentation,                   // [in] data representation on the target
-                                                out serverState.Context,                                // [in/out] receives the new context handle    
-                                                out ServerToken,                                        // [in/out] pointer to the output buffers
-                                                out uNewContextAttr,                                    // [out] receives the context attributes        
-                                                out NewLifeTime);                                       // [out] receives the life span of the security context
-
-                                            if (ss != API.SuccessfulResult)
+                                            if (API.ValidateClientToken(clientMessage, serverState))
                                             {
                                                 return Unauthorized();
                                             }
                                             else
                                             {
-                                                Type3Message type3Message = new Type3Message(ClientToken.GetSecBufferByteArray());
-                                                module.Context.Response.Headers.Add("Authorization", "NTLM " + Convert.ToBase64String(ClientToken.GetSecBufferByteArray()));
+                                                Type3Message type3Message = new Type3Message(clientMessage);
+                                                module.Context.Response.Headers.Add("Authorization", "NTLM " + Convert.ToBase64String(clientMessage));
                                                 module.Context.Response.StatusCode = HttpStatusCode.OK;
                                             }
 
@@ -121,8 +89,7 @@ namespace Nancy.Authentication.Ntlm
                                 }
                                 finally
                                 {
-                                    ClientToken.Dispose();
-                                    ServerToken.Dispose();
+                                    serverState.Token.Dispose();
                                 }
                             }
                         }
