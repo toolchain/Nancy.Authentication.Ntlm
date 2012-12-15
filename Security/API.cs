@@ -31,7 +31,7 @@ namespace Nancy.Authentication.Ntlm.Security
             int pGetKeyFn, //SEC_GET_KEY_FN
             IntPtr pvGetKeyArgument, //PVOID
             ref Handle phCredential, //SecHandle //PCtxtHandle ref
-            ref SecurityInteger ptsExpiry); //PTimeStamp //TimeStamp ref
+            ref Integer ptsExpiry); //PTimeStamp //TimeStamp ref
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         public static extern int AcceptSecurityContext(ref Handle phCredential,
@@ -42,7 +42,7 @@ namespace Nancy.Authentication.Ntlm.Security
             out Handle phNewContext,
             out SecurityBufferDesciption pOutput,
             out uint pfContextAttr,    //managed ulong == 64 bits!!!
-            out SecurityInteger ptsTimeStamp);
+            out Integer ptsTimeStamp);
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         public static extern int AcceptSecurityContext(ref Handle phCredential,
@@ -53,6 +53,6 @@ namespace Nancy.Authentication.Ntlm.Security
             out Handle phNewContext,
             out SecurityBufferDesciption pOutput,
             out uint pfContextAttr,    //managed ulong == 64 bits!!!
-            out SecurityInteger ptsTimeStamp);
+            out Integer ptsTimeStamp);
     }
 }

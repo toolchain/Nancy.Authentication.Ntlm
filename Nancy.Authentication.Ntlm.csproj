@@ -65,11 +65,11 @@
     <Compile Include="Protocol\Type3Message.cs" />
     <Compile Include="ModuleSecurity.cs" />
     <Compile Include="Security\MultipleSecBufferHelper.cs" />
-    <Compile Include="Security\SecurityBuffer.cs" />
+    <Compile Include="Security\Buffer.cs" />
     <Compile Include="Security\SecurityBufferDescription.cs" />
     <Compile Include="Security\SecurityBufferType.cs" />
-    <Compile Include="Security\SecurityHandle.cs" />
-    <Compile Include="Security\SecurityInteger.cs" />
+    <Compile Include="Security\Handle.cs" />
+    <Compile Include="Security\Integer.cs" />
     <Compile Include="Security\ServerSecurity.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -50,7 +50,7 @@ namespace Nancy.Authentication.Ntlm
                                     Context = new Security.Handle(0)
                                 };
 
-                                SecurityInteger NewLifeTime = new SecurityInteger(0);
+                                Integer NewLifeTime = new Integer(0);
                                 SecurityBufferDesciption ServerToken = new SecurityBufferDesciption(API.MaximumTokenSize);
                                 SecurityBufferDesciption ClientToken = new SecurityBufferDesciption(message);
 
