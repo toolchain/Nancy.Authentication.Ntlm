@@ -70,7 +70,7 @@
     <Compile Include="Security\Buffer.cs" />
     <Compile Include="Security\Handle.cs" />
     <Compile Include="Security\Integer.cs" />
-    <Compile Include="Security\ServerSecurity.cs" />
+    <Compile Include="Security\SeverState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".nuget\NuGet.Config" />
