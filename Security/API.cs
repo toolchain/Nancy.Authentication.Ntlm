@@ -36,22 +36,22 @@ namespace Nancy.Authentication.Ntlm.Security
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         public static extern int AcceptSecurityContext(ref Handle phCredential,
             IntPtr phContext,
-            ref SecurityBufferDesciption pInput,
+            ref BufferDesciption pInput,
             uint fContextReq,
             uint TargetDataRep,
             out Handle phNewContext,
-            out SecurityBufferDesciption pOutput,
+            out BufferDesciption pOutput,
             out uint pfContextAttr,    //managed ulong == 64 bits!!!
             out Integer ptsTimeStamp);
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         public static extern int AcceptSecurityContext(ref Handle phCredential,
             ref Handle phContext,
-            ref SecurityBufferDesciption pInput,
+            ref BufferDesciption pInput,
             uint fContextReq,
             uint TargetDataRep,
             out Handle phNewContext,
-            out SecurityBufferDesciption pOutput,
+            out BufferDesciption pOutput,
             out uint pfContextAttr,    //managed ulong == 64 bits!!!
             out Integer ptsTimeStamp);
     }

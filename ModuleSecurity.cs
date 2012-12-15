@@ -51,8 +51,8 @@ namespace Nancy.Authentication.Ntlm
                                 };
 
                                 Integer NewLifeTime = new Integer(0);
-                                SecurityBufferDesciption ServerToken = new SecurityBufferDesciption(API.MaximumTokenSize);
-                                SecurityBufferDesciption ClientToken = new SecurityBufferDesciption(message);
+                                BufferDesciption ServerToken = new BufferDesciption(API.MaximumTokenSize);
+                                BufferDesciption ClientToken = new BufferDesciption(message);
 
                                 if (API.AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name, 
                                         "NTLM", 

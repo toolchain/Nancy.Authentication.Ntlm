@@ -7,14 +7,14 @@ using System.Runtime.InteropServices;
 namespace Nancy.Authentication.Ntlm.Security
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct SecurityBufferDesciption : IDisposable
+    public struct BufferDesciption : IDisposable
     {
 
         public int ulVersion;
         public int cBuffers;
         public IntPtr pBuffers; //Point to SecBuffer
 
-        public SecurityBufferDesciption(int bufferSize)
+        public BufferDesciption(int bufferSize)
         {
             ulVersion = (int)BufferType.SECBUFFER_VERSION;
             cBuffers = 1;
@@ -23,7 +23,7 @@ namespace Nancy.Authentication.Ntlm.Security
             Marshal.StructureToPtr(ThisSecBuffer, pBuffers, false);
         }
 
-        public SecurityBufferDesciption(byte[] secBufferBytes)
+        public BufferDesciption(byte[] secBufferBytes)
         {
             ulVersion = (int)BufferType.SECBUFFER_VERSION;
             cBuffers = 1;
@@ -32,7 +32,7 @@ namespace Nancy.Authentication.Ntlm.Security
             Marshal.StructureToPtr(ThisSecBuffer, pBuffers, false);
         }
 
-        public SecurityBufferDesciption(MultipleSecBufferHelper[] secBufferBytesArray)
+        public BufferDesciption(MultipleSecBufferHelper[] secBufferBytesArray)
         {
             if (secBufferBytesArray == null || secBufferBytesArray.Length == 0)
             {
