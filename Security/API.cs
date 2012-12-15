@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 
 namespace Nancy.Authentication.Ntlm.Security
 {
@@ -21,8 +22,25 @@ namespace Nancy.Authentication.Ntlm.Security
         public const int SecurityCredentialsInbound = 1;
         public const int SuccessfulResult = 0;
 
+        public static void AcquireCredentialsHandle(WindowsIdentity identity, ServerState state)
+        {
+            Integer NewLifeTime = new Integer(0);
+            if (AcquireCredentialsHandle(identity.Name,
+                "NTLM",
+                API.SecurityCredentialsInbound,
+                IntPtr.Zero,
+                IntPtr.Zero,
+                0,
+                IntPtr.Zero,
+                ref state.Credentials,
+                ref NewLifeTime) != API.SuccessfulResult)
+            {
+                throw new Exception("Couldn't acquire server credentials handle!!!");
+            }
+        }
+
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-        public static extern int AcquireCredentialsHandle(
+        private static extern int AcquireCredentialsHandle(
             string pszPrincipal,                            //SEC_CHAR*
             string pszPackage,                              //SEC_CHAR* //"Kerberos","NTLM","Negotiative"
             int fCredentialUse,

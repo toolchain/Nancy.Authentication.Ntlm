@@ -71,6 +71,7 @@
     <Compile Include="Security\Handle.cs" />
     <Compile Include="Security\Integer.cs" />
     <Compile Include="Security\ServerState.cs" />
+    <Compile Include="Security\WindowsIndentity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".nuget\NuGet.Config" />

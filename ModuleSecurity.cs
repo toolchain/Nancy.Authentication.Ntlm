@@ -54,18 +54,7 @@ namespace Nancy.Authentication.Ntlm
                                 BufferDesciption ServerToken = new BufferDesciption(API.MaximumTokenSize);
                                 BufferDesciption ClientToken = new BufferDesciption(message);
 
-                                if (API.AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name, 
-                                        "NTLM", 
-                                        API.SecurityCredentialsInbound,
-                                        IntPtr.Zero, 
-                                        IntPtr.Zero, 
-                                        0, 
-                                        IntPtr.Zero,
-                                        ref serverState.Credentials, 
-                                        ref NewLifeTime) != API.SuccessfulResult)
-                                {
-                                    throw new Exception("Couldn't acquire server credentials handle!!!");
-                                }
+                                API.AcquireCredentialsHandle(WindowsIdentity.GetCurrent(), serverState);
 
                                 Response response = new Response();
                                 
