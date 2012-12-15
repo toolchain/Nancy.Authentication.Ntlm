@@ -16,19 +16,19 @@ namespace Nancy.Authentication.Ntlm.Security
         public Buffer(int bufferSize)
         {
             cbBuffer = bufferSize;
-            BufferType = (int)SecurityBufferType.SECBUFFER_TOKEN;
+            BufferType = (int)BufferType.SECBUFFER_TOKEN;
             pvBuffer = Marshal.AllocHGlobal(bufferSize);
         }
 
         public Buffer(byte[] secBufferBytes)
         {
             cbBuffer = secBufferBytes.Length;
-            BufferType = (int)SecurityBufferType.SECBUFFER_TOKEN;
+            BufferType = (int)BufferType.SECBUFFER_TOKEN;
             pvBuffer = Marshal.AllocHGlobal(cbBuffer);
             Marshal.Copy(secBufferBytes, 0, pvBuffer, cbBuffer);
         }
 
-        public Buffer(byte[] secBufferBytes, SecurityBufferType bufferType)
+        public Buffer(byte[] secBufferBytes, BufferType bufferType)
         {
             cbBuffer = secBufferBytes.Length;
             BufferType = (int)bufferType;

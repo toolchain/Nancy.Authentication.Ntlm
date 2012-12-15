@@ -16,7 +16,7 @@ namespace Nancy.Authentication.Ntlm.Security
 
         public SecurityBufferDesciption(int bufferSize)
         {
-            ulVersion = (int)SecurityBufferType.SECBUFFER_VERSION;
+            ulVersion = (int)BufferType.SECBUFFER_VERSION;
             cBuffers = 1;
             Buffer ThisSecBuffer = new Buffer(bufferSize);
             pBuffers = Marshal.AllocHGlobal(Marshal.SizeOf(ThisSecBuffer));
@@ -25,7 +25,7 @@ namespace Nancy.Authentication.Ntlm.Security
 
         public SecurityBufferDesciption(byte[] secBufferBytes)
         {
-            ulVersion = (int)SecurityBufferType.SECBUFFER_VERSION;
+            ulVersion = (int)BufferType.SECBUFFER_VERSION;
             cBuffers = 1;
             Buffer ThisSecBuffer = new Buffer(secBufferBytes);
             pBuffers = Marshal.AllocHGlobal(Marshal.SizeOf(ThisSecBuffer));
@@ -39,7 +39,7 @@ namespace Nancy.Authentication.Ntlm.Security
                 throw new ArgumentException("secBufferBytesArray cannot be null or 0 length");
             }
 
-            ulVersion = (int)SecurityBufferType.SECBUFFER_VERSION;
+            ulVersion = (int)BufferType.SECBUFFER_VERSION;
             cBuffers = secBufferBytesArray.Length;
 
             //Allocate memory for SecBuffer Array....

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Nancy.Authentication.Ntlm.Security
 {
-    public enum SecurityBufferType
+    public enum BufferType
     {
         SECBUFFER_VERSION = 0,
         SECBUFFER_EMPTY = 0,

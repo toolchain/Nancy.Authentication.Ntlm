@@ -8,9 +8,9 @@ namespace Nancy.Authentication.Ntlm.Security
     public struct MultipleSecBufferHelper
     {
         public byte[] Buffer;
-        public SecurityBufferType BufferType;
+        public BufferType BufferType;
 
-        public MultipleSecBufferHelper(byte[] buffer, SecurityBufferType bufferType)
+        public MultipleSecBufferHelper(byte[] buffer, BufferType bufferType)
         {
             if (buffer == null || buffer.Length == 0)
             {
