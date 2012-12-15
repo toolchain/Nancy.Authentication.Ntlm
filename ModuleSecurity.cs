@@ -56,7 +56,7 @@ namespace Nancy.Authentication.Ntlm
 
                                 if (API.AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name, 
                                         "NTLM", 
-                                        API.SECPKG_CRED_INBOUND,
+                                        API.SecurityCredentialsInbound,
                                         IntPtr.Zero, 
                                         IntPtr.Zero, 
                                         0, 

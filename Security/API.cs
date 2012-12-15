@@ -18,7 +18,7 @@ namespace Nancy.Authentication.Ntlm.Security
         public const int StandardContextAttributes = ISC_REQ_CONFIDENTIALITY | ISC_REQ_REPLAY_DETECT | ISC_REQ_SEQUENCE_DETECT | ISC_REQ_CONNECTION;
         public const int SecurityNativeDataRepresentation = 0x10;
         public const int MaximumTokenSize = 12288;
-        public const int SECPKG_CRED_INBOUND = 1;
+        public const int SecurityCredentialsInbound = 1;
         public const int SuccessfulResult = 0;
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
