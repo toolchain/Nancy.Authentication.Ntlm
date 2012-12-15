@@ -15,7 +15,7 @@ namespace Nancy.Authentication.Ntlm
 {
     public static class ModuleSecurity
     {
-        public static Dictionary<string, SeverSecurity> Contexts = new Dictionary<string, SeverSecurity>();
+        public static Dictionary<string, Sever> Contexts = new Dictionary<string, Sever>();
 
         private static Response Unauthorized()
         {
@@ -44,10 +44,10 @@ namespace Nancy.Authentication.Ntlm
                             {
                                 byte[] message = Convert.FromBase64String(AuthorizationString.Substring(5));
 
-                                SeverSecurity serverSecurity = new SeverSecurity()
+                                var server = new Sever()
                                 {
-                                    Credentials = new Security.Handle(0),
-                                    Context = new Security.Handle(0)
+                                    Credentials = new Handle(0),
+                                    Context = new Handle(0)
                                 };
 
                                 Integer NewLifeTime = new Integer(0);
@@ -61,7 +61,7 @@ namespace Nancy.Authentication.Ntlm
                                         IntPtr.Zero, 
                                         0, 
                                         IntPtr.Zero,
-                                        ref serverSecurity.Credentials, 
+                                        ref server.Credentials, 
                                         ref NewLifeTime) != API.SuccessfulResult)
                                 {
                                     throw new Exception("Couldn't acquire server credentials handle!!!");
@@ -79,19 +79,19 @@ namespace Nancy.Authentication.Ntlm
                                         {
                                             uint uNewContextAttr = 0;
 
-                                            ss = API.AcceptSecurityContext(ref serverSecurity.Credentials,   // [in] handle to the credentials
-                                                IntPtr.Zero,                                                        // [in/out] handle of partially formed context.  Always NULL the first time through
-                                                ref ClientToken,                                                    // [in] pointer to the input buffers
-                                                API.StandardContextAttributes,                               // [in] required context attributes
-                                                API.SecurityNativeDataRepresentation,                        // [in] data representation on the target
-                                                out serverSecurity.Context,                                         // [in/out] receives the new context handle    
-                                                out ServerToken,                                                    // [in/out] pointer to the output buffers
-                                                out uNewContextAttr,                                                // [out] receives the context attributes        
-                                                out NewLifeTime);                                                   // [out] receives the life span of the security context
+                                            ss = API.AcceptSecurityContext(ref server.Credentials,  // [in] handle to the credentials
+                                                IntPtr.Zero,                                        // [in/out] handle of partially formed context.  Always NULL the first time through
+                                                ref ClientToken,                                    // [in] pointer to the input buffers
+                                                API.StandardContextAttributes,                      // [in] required context attributes
+                                                API.SecurityNativeDataRepresentation,               // [in] data representation on the target
+                                                out server.Context,                                 // [in/out] receives the new context handle    
+                                                out ServerToken,                                    // [in/out] pointer to the output buffers
+                                                out uNewContextAttr,                                // [out] receives the context attributes        
+                                                out NewLifeTime);                                   // [out] receives the life span of the security context
 
                                             var contextId = Guid.NewGuid().ToString();
 
-                                            Contexts.Add(contextId, serverSecurity);
+                                            Contexts.Add(contextId, server);
 
                                             response.Cookies.Add(new NancyCookie("NTLM", contextId));
                                             response.StatusCode = HttpStatusCode.Unauthorized;
@@ -109,20 +109,20 @@ namespace Nancy.Authentication.Ntlm
                                         // Message of type 3 was received
                                         try
                                         {
-                                            serverSecurity = Contexts[module.Request.Cookies["NTLM"]];
+                                            server = Contexts[module.Request.Cookies["NTLM"]];
                                             Contexts.Remove(module.Request.Cookies["NTLM"]);
 
                                             uint uNewContextAttr = 0;
 
-                                            ss = API.AcceptSecurityContext(ref serverSecurity.Credentials,  // [in] handle to the credentials
-                                                ref serverSecurity.Context,                                     // [in/out] handle of partially formed context.  Always NULL the first time through
-                                                ref ClientToken,                                                // [in] pointer to the input buffers
-                                                API.StandardContextAttributes,                              // [in] required context attributes
-                                                API.SecurityNativeDataRepresentation,                       // [in] data representation on the target
-                                                out serverSecurity.Context,                                     // [in/out] receives the new context handle    
-                                                out ServerToken,                                                // [in/out] pointer to the output buffers
-                                                out uNewContextAttr,                                            // [out] receives the context attributes        
-                                                out NewLifeTime);                                               // [out] receives the life span of the security context
+                                            ss = API.AcceptSecurityContext(ref server.Credentials,  // [in] handle to the credentials
+                                                ref server.Context,                                 // [in/out] handle of partially formed context.  Always NULL the first time through
+                                                ref ClientToken,                                    // [in] pointer to the input buffers
+                                                API.StandardContextAttributes,                      // [in] required context attributes
+                                                API.SecurityNativeDataRepresentation,               // [in] data representation on the target
+                                                out server.Context,                                 // [in/out] receives the new context handle    
+                                                out ServerToken,                                    // [in/out] pointer to the output buffers
+                                                out uNewContextAttr,                                // [out] receives the context attributes        
+                                                out NewLifeTime);                                   // [out] receives the life span of the security context
 
                                             if (ss != API.SuccessfulResult)
                                             {
