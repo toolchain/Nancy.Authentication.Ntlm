@@ -7,8 +7,8 @@ namespace Nancy.Authentication.Ntlm.Security
 {
     public struct State
     {
-        public Handle Credentials;
-        public Handle Context;
-        public BufferDesciption Token;
+        public Common.SecurityHandle Credentials;
+        public Common.SecurityHandle Context;
+        public Common.SecurityBufferDesciption Token;
     }
 }

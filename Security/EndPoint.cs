@@ -13,7 +13,7 @@ namespace Nancy.Authentication.Ntlm.Security
     {
         public static bool IsServerChallengeAcquired(byte[] message, out State serverState)
         {
-            BufferDesciption ClientToken = new BufferDesciption(message);
+            Common.SecurityBufferDesciption ClientToken = new Common.SecurityBufferDesciption(message);
 
             try
             {
@@ -21,9 +21,9 @@ namespace Nancy.Authentication.Ntlm.Security
 
                 serverState = new State()
                 {
-                    Credentials = new Handle(0),
-                    Context = new Handle(0),
-                    Token = new BufferDesciption(Common.MaximumTokenSize)
+                    Credentials = new Common.SecurityHandle(0),
+                    Context = new Common.SecurityHandle(0),
+                    Token = new Common.SecurityBufferDesciption(Common.MaximumTokenSize)
                 };
 
                 result = AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name,
@@ -68,7 +68,7 @@ namespace Nancy.Authentication.Ntlm.Security
 
         public static bool IsClientResponseValid(byte[] message, ref State serverState)
         {
-            BufferDesciption ClientToken = new BufferDesciption(message);
+            Common.SecurityBufferDesciption ClientToken = new Common.SecurityBufferDesciption(message);
 
             try
             {
@@ -108,30 +108,30 @@ namespace Nancy.Authentication.Ntlm.Security
             IntPtr pAuthData,                               //PVOID
             int pGetKeyFn,                                  //SEC_GET_KEY_FN
             IntPtr pvGetKeyArgument,                        //PVOID
-            ref Handle phCredential,                        //SecHandle //PCtxtHandle ref
-            ref Integer ptsExpiry);                         //PTimeStamp //TimeStamp ref
+            ref Common.SecurityHandle phCredential,                        //SecHandle //PCtxtHandle ref
+            ref Common.SecurityInteger ptsExpiry);                         //PTimeStamp //TimeStamp ref
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-        private static extern int AcceptSecurityContext(ref Handle phCredential,
+        private static extern int AcceptSecurityContext(ref Common.SecurityHandle phCredential,
             IntPtr phContext,
-            ref BufferDesciption pInput,
+            ref Common.SecurityBufferDesciption pInput,
             uint fContextReq,
             uint TargetDataRep,
-            out Handle phNewContext,
-            out BufferDesciption pOutput,
+            out Common.SecurityHandle phNewContext,
+            out Common.SecurityBufferDesciption pOutput,
             out uint pfContextAttr,                         //managed ulong == 64 bits!!!
-            out Integer ptsTimeStamp);
+            out Common.SecurityInteger ptsTimeStamp);
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-        public static extern int AcceptSecurityContext(ref Handle phCredential,
-            ref Handle phContext,
-            ref BufferDesciption pInput,
+        public static extern int AcceptSecurityContext(ref Common.SecurityHandle phCredential,
+            ref Common.SecurityHandle phContext,
+            ref Common.SecurityBufferDesciption pInput,
             uint fContextReq,
             uint TargetDataRep,
-            out Handle phNewContext,
-            out BufferDesciption pOutput,
+            out Common.SecurityHandle phNewContext,
+            out Common.SecurityBufferDesciption pOutput,
             out uint pfContextAttr,                         //managed ulong == 64 bits!!!
-            out Integer ptsTimeStamp);
+            out Common.SecurityInteger ptsTimeStamp);
 
         #endregion
     }

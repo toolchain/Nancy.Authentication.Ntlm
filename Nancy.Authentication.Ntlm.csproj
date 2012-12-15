@@ -64,13 +64,8 @@
     <Compile Include="Protocol\NtlmFlags.cs" />
     <Compile Include="Protocol\Type3Message.cs" />
     <Compile Include="ModuleSecurity.cs" />
-    <Compile Include="Security\BufferDescription.cs" />
-    <Compile Include="Security\BufferHelper.cs" />
-    <Compile Include="Security\BufferType.cs" />
-    <Compile Include="Security\Buffer.cs" />
+    <Compile Include="Security\BufferWrapper.cs" />
     <Compile Include="Security\Common.cs" />
-    <Compile Include="Security\Handle.cs" />
-    <Compile Include="Security\Integer.cs" />
     <Compile Include="Security\State.cs" />
   </ItemGroup>
   <ItemGroup>

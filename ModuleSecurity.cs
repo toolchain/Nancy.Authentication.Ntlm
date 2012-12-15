@@ -72,8 +72,8 @@ namespace Nancy.Authentication.Ntlm
                                             if (EndPoint.IsClientResponseValid(clientMessage, ref serverState))
                                             {
                                                 Type3Message type3Message = new Type3Message(clientMessage);
-                                                module.Context.Response.Headers.Add("Authorization", "NTLM " + Convert.ToBase64String(clientMessage));
-                                                module.Context.Response.StatusCode = HttpStatusCode.OK;
+                                                // module.Context.Response.Headers.Add("Authorization", "NTLM " + Convert.ToBase64String(clientMessage));
+                                                // module.Context.Response.StatusCode = HttpStatusCode.OK;
                                             }
                                             else
                                             {
