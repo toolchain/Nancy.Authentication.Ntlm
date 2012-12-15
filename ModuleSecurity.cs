@@ -15,7 +15,7 @@ namespace Nancy.Authentication.Ntlm
 {
     public static class ModuleSecurity
     {
-        public static Dictionary<string, SeverState> Unfinished = new Dictionary<string, SeverState>();
+        public static Dictionary<string, ServerState> Unfinished = new Dictionary<string, ServerState>();
 
         private static Response Unauthorized()
         {
@@ -44,7 +44,7 @@ namespace Nancy.Authentication.Ntlm
                             {
                                 byte[] message = Convert.FromBase64String(AuthorizationString.Substring(5));
 
-                                var serverState = new SeverState()
+                                var serverState = new ServerState()
                                 {
                                     Credentials = new Handle(0),
                                     Context = new Handle(0)

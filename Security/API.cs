@@ -23,15 +23,15 @@ namespace Nancy.Authentication.Ntlm.Security
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         public static extern int AcquireCredentialsHandle(
-            string pszPrincipal, //SEC_CHAR*
-            string pszPackage, //SEC_CHAR* //"Kerberos","NTLM","Negotiative"
+            string pszPrincipal,                            //SEC_CHAR*
+            string pszPackage,                              //SEC_CHAR* //"Kerberos","NTLM","Negotiative"
             int fCredentialUse,
-            IntPtr PAuthenticationID,//_LUID AuthenticationID,//pvLogonID, //PLUID
-            IntPtr pAuthData,//PVOID
-            int pGetKeyFn, //SEC_GET_KEY_FN
-            IntPtr pvGetKeyArgument, //PVOID
-            ref Handle phCredential, //SecHandle //PCtxtHandle ref
-            ref Integer ptsExpiry); //PTimeStamp //TimeStamp ref
+            IntPtr PAuthenticationID,                       //_LUID AuthenticationID,//pvLogonID, //PLUID
+            IntPtr pAuthData,                               //PVOID
+            int pGetKeyFn,                                  //SEC_GET_KEY_FN
+            IntPtr pvGetKeyArgument,                        //PVOID
+            ref Handle phCredential,                        //SecHandle //PCtxtHandle ref
+            ref Integer ptsExpiry);                         //PTimeStamp //TimeStamp ref
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         public static extern int AcceptSecurityContext(ref Handle phCredential,
@@ -41,7 +41,7 @@ namespace Nancy.Authentication.Ntlm.Security
             uint TargetDataRep,
             out Handle phNewContext,
             out BufferDesciption pOutput,
-            out uint pfContextAttr,    //managed ulong == 64 bits!!!
+            out uint pfContextAttr,                         //managed ulong == 64 bits!!!
             out Integer ptsTimeStamp);
 
         [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
@@ -52,7 +52,7 @@ namespace Nancy.Authentication.Ntlm.Security
             uint TargetDataRep,
             out Handle phNewContext,
             out BufferDesciption pOutput,
-            out uint pfContextAttr,    //managed ulong == 64 bits!!!
+            out uint pfContextAttr,                         //managed ulong == 64 bits!!!
             out Integer ptsTimeStamp);
     }
 }
