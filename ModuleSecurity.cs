@@ -62,7 +62,7 @@ namespace Nancy.Authentication.Ntlm
                                         0, 
                                         IntPtr.Zero,
                                         ref serverSecurity.Credentials, 
-                                        ref NewLifeTime) != API.SEC_E_OK)
+                                        ref NewLifeTime) != API.SuccessfulResult)
                                 {
                                     throw new Exception("Couldn't acquire server credentials handle!!!");
                                 }
@@ -124,7 +124,7 @@ namespace Nancy.Authentication.Ntlm
                                                 out uNewContextAttr,                                            // [out] receives the context attributes        
                                                 out NewLifeTime);                                               // [out] receives the life span of the security context
 
-                                            if (ss != API.SEC_E_OK)
+                                            if (ss != API.SuccessfulResult)
                                             {
                                                 return Unauthorized();
                                             }

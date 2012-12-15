@@ -19,9 +19,9 @@ namespace Nancy.Authentication.Ntlm.Security
         public const int SecurityNativeDataRepresentation = 0x10;
         public const int MaximumTokenSize = 12288;
         public const int SECPKG_CRED_INBOUND = 1;
-        public const int SEC_E_OK = 0;
+        public const int SuccessfulResult = 0;
 
-        [DllImport("secur32", CharSet = CharSet.Auto)]
+        [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         public static extern int AcquireCredentialsHandle(
             string pszPrincipal, //SEC_CHAR*
             string pszPackage, //SEC_CHAR* //"Kerberos","NTLM","Negotiative"
@@ -33,7 +33,7 @@ namespace Nancy.Authentication.Ntlm.Security
             ref SecurityHandle phCredential, //SecHandle //PCtxtHandle ref
             ref SecurityInteger ptsExpiry); //PTimeStamp //TimeStamp ref
 
-        [DllImport("secur32.Dll", CharSet = CharSet.Auto, SetLastError = false)]
+        [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         public static extern int AcceptSecurityContext(ref SecurityHandle phCredential,
             IntPtr phContext,
             ref SecurityBufferDesciption pInput,
@@ -44,7 +44,7 @@ namespace Nancy.Authentication.Ntlm.Security
             out uint pfContextAttr,    //managed ulong == 64 bits!!!
             out SecurityInteger ptsTimeStamp);
 
-        [DllImport("secur32.Dll", CharSet = CharSet.Auto, SetLastError = false)]
+        [DllImport("secur32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         public static extern int AcceptSecurityContext(ref SecurityHandle phCredential,
             ref SecurityHandle phContext,
             ref SecurityBufferDesciption pInput,
