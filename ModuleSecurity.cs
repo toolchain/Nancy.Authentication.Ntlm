@@ -46,8 +46,8 @@ namespace Nancy.Authentication.Ntlm
 
                                 SeverSecurity serverSecurity = new SeverSecurity()
                                 {
-                                    Credentials = new Security.SecurityHandle(0),
-                                    Context = new Security.SecurityHandle(0)
+                                    Credentials = new Security.Handle(0),
+                                    Context = new Security.Handle(0)
                                 };
 
                                 SecurityInteger NewLifeTime = new SecurityInteger(0);

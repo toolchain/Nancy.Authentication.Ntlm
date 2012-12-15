@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 namespace Nancy.Authentication.Ntlm.Security
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct SecurityHandle
+    public struct Handle
     {
         public IntPtr LowPart;
         public IntPtr HighPart;
-        public SecurityHandle(int dummy)
+        public Handle(int dummy)
         {
             LowPart = HighPart = IntPtr.Zero;
         }

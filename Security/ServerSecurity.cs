@@ -7,7 +7,7 @@ namespace Nancy.Authentication.Ntlm.Security
 {
     public struct SeverSecurity
     {
-        public SecurityHandle Credentials;
-        public SecurityHandle Context;
+        public Handle Credentials;
+        public Handle Context;
     }
 }
