@@ -10,20 +10,20 @@ namespace Nancy.Authentication.Ntlm.Security
     public struct Buffer : IDisposable
     {
         public int cbBuffer;
-        public int BufferType;
+        public int cbBufferType;
         public IntPtr pvBuffer;
 
         public Buffer(int bufferSize)
         {
             cbBuffer = bufferSize;
-            BufferType = (int)BufferType.SECBUFFER_TOKEN;
+            cbBufferType = (int)BufferType.SECBUFFER_TOKEN;
             pvBuffer = Marshal.AllocHGlobal(bufferSize);
         }
 
         public Buffer(byte[] secBufferBytes)
         {
             cbBuffer = secBufferBytes.Length;
-            BufferType = (int)BufferType.SECBUFFER_TOKEN;
+            cbBufferType = (int)BufferType.SECBUFFER_TOKEN;
             pvBuffer = Marshal.AllocHGlobal(cbBuffer);
             Marshal.Copy(secBufferBytes, 0, pvBuffer, cbBuffer);
         }
@@ -31,7 +31,7 @@ namespace Nancy.Authentication.Ntlm.Security
         public Buffer(byte[] secBufferBytes, BufferType bufferType)
         {
             cbBuffer = secBufferBytes.Length;
-            BufferType = (int)bufferType;
+            cbBufferType = (int)bufferType;
             pvBuffer = Marshal.AllocHGlobal(cbBuffer);
             Marshal.Copy(secBufferBytes, 0, pvBuffer, cbBuffer);
         }

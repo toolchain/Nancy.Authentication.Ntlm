@@ -32,7 +32,7 @@ namespace Nancy.Authentication.Ntlm.Security
             Marshal.StructureToPtr(ThisSecBuffer, pBuffers, false);
         }
 
-        public BufferDesciption(MultipleSecBufferHelper[] secBufferBytesArray)
+        public BufferDesciption(BufferHelper[] secBufferBytesArray)
         {
             if (secBufferBytesArray == null || secBufferBytesArray.Length == 0)
             {
@@ -59,8 +59,8 @@ namespace Nancy.Authentication.Ntlm.Security
                 //are disposed...
                 int CurrentOffset = Index * Marshal.SizeOf(typeof(Buffer));
                 Marshal.WriteInt32(pBuffers, CurrentOffset, ThisSecBuffer.cbBuffer);
-                Marshal.WriteInt32(pBuffers, CurrentOffset + Marshal.SizeOf(ThisSecBuffer.cbBuffer), ThisSecBuffer.BufferType);
-                Marshal.WriteIntPtr(pBuffers, CurrentOffset + Marshal.SizeOf(ThisSecBuffer.cbBuffer) + Marshal.SizeOf(ThisSecBuffer.BufferType), ThisSecBuffer.pvBuffer);
+                Marshal.WriteInt32(pBuffers, CurrentOffset + Marshal.SizeOf(ThisSecBuffer.cbBuffer), ThisSecBuffer.cbBufferType);
+                Marshal.WriteIntPtr(pBuffers, CurrentOffset + Marshal.SizeOf(ThisSecBuffer.cbBuffer) + Marshal.SizeOf(ThisSecBuffer.cbBufferType), ThisSecBuffer.pvBuffer);
             }
         }
 

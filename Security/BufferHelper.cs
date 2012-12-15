@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Nancy.Authentication.Ntlm.Security
 {
-    public struct MultipleSecBufferHelper
+    public struct BufferHelper
     {
         public byte[] Buffer;
         public BufferType BufferType;
 
-        public MultipleSecBufferHelper(byte[] buffer, BufferType bufferType)
+        public BufferHelper(byte[] buffer, BufferType bufferType)
         {
             if (buffer == null || buffer.Length == 0)
             {
