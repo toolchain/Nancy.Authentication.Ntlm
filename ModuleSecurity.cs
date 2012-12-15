@@ -8,11 +8,8 @@ using System.Web;
 using Nancy;
 using Nancy.Authentication.Ntlm.Protocol;
 using System.DirectoryServices.AccountManagement;
-using SSPITest;
-using Nancy.Session;
 using Nancy.Cookies;
-using System.IO;
-using Nancy.Json;
+using Nancy.Authentication.Ntlm.Security;
 
 namespace Nancy.Authentication.Ntlm
 {
@@ -49,23 +46,23 @@ namespace Nancy.Authentication.Ntlm
 
                                 SeverSecurity serverSecurity = new SeverSecurity()
                                 {
-                                    Credentials = new SecurityHandle(0),
-                                    Context = new SecurityHandle(0)
+                                    Credentials = new Security.SecurityHandle(0),
+                                    Context = new Security.SecurityHandle(0)
                                 };
 
                                 SecurityInteger NewLifeTime = new SecurityInteger(0);
-                                SecurityBufferDesciption ServerToken = new SecurityBufferDesciption(SspiApi.MaximumTokenSize);
+                                SecurityBufferDesciption ServerToken = new SecurityBufferDesciption(API.MaximumTokenSize);
                                 SecurityBufferDesciption ClientToken = new SecurityBufferDesciption(message);
 
-                                if (SspiApi.AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name, 
+                                if (API.AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name, 
                                         "NTLM", 
-                                        SspiApi.SECPKG_CRED_INBOUND,
+                                        API.SECPKG_CRED_INBOUND,
                                         IntPtr.Zero, 
                                         IntPtr.Zero, 
                                         0, 
                                         IntPtr.Zero,
                                         ref serverSecurity.Credentials, 
-                                        ref NewLifeTime) != SspiApi.SEC_E_OK)
+                                        ref NewLifeTime) != API.SEC_E_OK)
                                 {
                                     throw new Exception("Couldn't acquire server credentials handle!!!");
                                 }
@@ -82,11 +79,11 @@ namespace Nancy.Authentication.Ntlm
                                         {
                                             uint uNewContextAttr = 0;
 
-                                            ss = SspiApi.AcceptSecurityContext(ref serverSecurity.Credentials,   // [in] handle to the credentials
+                                            ss = API.AcceptSecurityContext(ref serverSecurity.Credentials,   // [in] handle to the credentials
                                                 IntPtr.Zero,                                                        // [in/out] handle of partially formed context.  Always NULL the first time through
                                                 ref ClientToken,                                                    // [in] pointer to the input buffers
-                                                SspiApi.StandardContextAttributes,                               // [in] required context attributes
-                                                SspiApi.SecurityNativeDataRepresentation,                        // [in] data representation on the target
+                                                API.StandardContextAttributes,                               // [in] required context attributes
+                                                API.SecurityNativeDataRepresentation,                        // [in] data representation on the target
                                                 out serverSecurity.Context,                                         // [in/out] receives the new context handle    
                                                 out ServerToken,                                                    // [in/out] pointer to the output buffers
                                                 out uNewContextAttr,                                                // [out] receives the context attributes        
@@ -117,17 +114,17 @@ namespace Nancy.Authentication.Ntlm
 
                                             uint uNewContextAttr = 0;
 
-                                            ss = SspiApi.AcceptSecurityContext(ref serverSecurity.Credentials,  // [in] handle to the credentials
+                                            ss = API.AcceptSecurityContext(ref serverSecurity.Credentials,  // [in] handle to the credentials
                                                 ref serverSecurity.Context,                                     // [in/out] handle of partially formed context.  Always NULL the first time through
                                                 ref ClientToken,                                                // [in] pointer to the input buffers
-                                                SspiApi.StandardContextAttributes,                              // [in] required context attributes
-                                                SspiApi.SecurityNativeDataRepresentation,                       // [in] data representation on the target
+                                                API.StandardContextAttributes,                              // [in] required context attributes
+                                                API.SecurityNativeDataRepresentation,                       // [in] data representation on the target
                                                 out serverSecurity.Context,                                     // [in/out] receives the new context handle    
                                                 out ServerToken,                                                // [in/out] pointer to the output buffers
                                                 out uNewContextAttr,                                            // [out] receives the context attributes        
                                                 out NewLifeTime);                                               // [out] receives the life span of the security context
 
-                                            if (ss != SspiApi.SEC_E_OK)
+                                            if (ss != API.SEC_E_OK)
                                             {
                                                 return Unauthorized();
                                             }

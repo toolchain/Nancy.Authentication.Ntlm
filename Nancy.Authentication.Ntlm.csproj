@@ -49,7 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Security\API.cs" />
-    <Compile Include="SSPI\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Cryptography\Context.cs" />
     <Compile Include="Cryptography\Hash.cs" />
@@ -66,6 +65,13 @@
     <Compile Include="Protocol\Type2Message.cs" />
     <Compile Include="Protocol\Type3Message.cs" />
     <Compile Include="ModuleSecurity.cs" />
+    <Compile Include="Security\MultipleSecBufferHelper.cs" />
+    <Compile Include="Security\SecurityBuffer.cs" />
+    <Compile Include="Security\SecurityBufferDescription.cs" />
+    <Compile Include="Security\SecurityBufferType.cs" />
+    <Compile Include="Security\SecurityHandle.cs" />
+    <Compile Include="Security\SecurityInteger.cs" />
+    <Compile Include="Security\ServerSecurity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".nuget\NuGet.Config" />

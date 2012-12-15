@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Nancy.Authentication.Ntlm")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCopyright("Alexey Shytikov")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
