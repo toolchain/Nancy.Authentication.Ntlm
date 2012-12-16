@@ -13,7 +13,7 @@ using Nancy.Authentication.Ntlm.Security;
 
 namespace Nancy.Authentication.Ntlm
 {
-    public static class ModuleSecurity
+    public static class ModuleExtensions
     {
         public static Dictionary<string, State> Unfinished = new Dictionary<string, State>();
 

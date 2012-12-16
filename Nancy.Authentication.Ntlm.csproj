@@ -63,7 +63,7 @@
     <Compile Include="Protocol\NtlmAuthLevel.cs" />
     <Compile Include="Protocol\NtlmFlags.cs" />
     <Compile Include="Protocol\Type3Message.cs" />
-    <Compile Include="ModuleSecurity.cs" />
+    <Compile Include="ModuleExtensions.cs" />
     <Compile Include="Security\BufferWrapper.cs" />
     <Compile Include="Security\Common.cs" />
     <Compile Include="Security\State.cs" />
