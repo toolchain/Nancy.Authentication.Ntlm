@@ -11,7 +11,7 @@ namespace Nancy.Authentication.Ntlm.Security
 {
     class EndPoint
     {
-        public static bool IsServerChallengeAcquired(byte[] message, out State serverState)
+        public static bool IsServerChallengeAcquired(ref byte[] message, out State serverState)
         {
             Common.SecurityBufferDesciption ClientToken = new Common.SecurityBufferDesciption(message);
 

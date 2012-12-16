@@ -42,36 +42,42 @@ namespace Nancy.Authentication.Ntlm
                             }
                             else
                             {
-                                byte[] clientMessage = Convert.FromBase64String(AuthorizationString.Substring(5));
+                                byte[] token = Convert.FromBase64String(AuthorizationString.Substring(5));
 
-                                State serverState = new State();
-                                Response response = new Response();
+                                State authenticationState = new State();
 
                                 try
                                 {
-                                    switch (clientMessage[8])
+                                    // First eight bytes are header containing NTLMSSP\0 signature
+                                    // Next byte contains type of the message recieved.
+                                    // Message Type 1 — is initial client's response to server's 401 Unauthorized error.
+                                    // Message Type 2 — is the server's response to it. Contains random 8 bytes challenge.
+                                    // Message Type 3 — is encrypted password hashes from client ready to server validation.
+                                    switch (token[8])
                                     {
                                         case 1:
                                             // Message of type 1 was received
-                                            var stateId = Guid.NewGuid().ToString();
-                                            EndPoint.IsServerChallengeAcquired(clientMessage, out serverState);
+                                            if (EndPoint.IsServerChallengeAcquired(ref token, out authenticationState))
+                                            {
+                                                var stateId = Guid.NewGuid().ToString();
+                                                Unfinished.Add(stateId, authenticationState);
 
-                                            Unfinished.Add(stateId, serverState);
-
-                                            response.Cookies.Add(new NancyCookie("NTLM", stateId));
-                                            response.StatusCode = HttpStatusCode.Unauthorized;
-                                            response.Headers.Add("Connection", "Keep-Alive");
-                                            response.Headers.Add("WWW-Authenticate", "NTLM " + Convert.ToBase64String(serverState.Token.GetSecBufferByteArray()));
-                                            
-                                            return response;
+                                                Response response = new Response();
+                                                response.Cookies.Add(new NancyCookie("NTLM", stateId));
+                                                response.StatusCode = HttpStatusCode.Unauthorized;
+                                                response.Headers.Add("Connection", "Keep-Alive");
+                                                response.Headers.Add("WWW-Authenticate", "NTLM " + Convert.ToBase64String(authenticationState.Token.GetSecBufferByteArray()));
+                                                return response;
+                                            }
+                                            break;
                                         case 3:
                                             // Message of type 3 was received
-                                            serverState = Unfinished[module.Request.Cookies["NTLM"]];
+                                            authenticationState = Unfinished[module.Request.Cookies["NTLM"]];
                                             Unfinished.Remove(module.Request.Cookies["NTLM"]);
 
-                                            if (EndPoint.IsClientResponseValid(clientMessage, ref serverState))
+                                            if (EndPoint.IsClientResponseValid(token, ref authenticationState))
                                             {
-                                                Type3Message type3Message = new Type3Message(clientMessage);
+                                                Type3Message type3Message = new Type3Message(token);
                                                 // module.Context.Response.Headers.Add("Authorization", "NTLM " + Convert.ToBase64String(clientMessage));
                                                 // module.Context.Response.StatusCode = HttpStatusCode.OK;
                                             }
@@ -89,7 +95,7 @@ namespace Nancy.Authentication.Ntlm
                                 }
                                 finally
                                 {
-                                    serverState.Token.Dispose();
+                                    authenticationState.Token.Dispose();
                                 }
                             }
                         }
