@@ -41,15 +41,8 @@ namespace Nancy.Authentication.Ntlm.Protocol
 {
 	public class Type3Message : MessageBase 
     {
-		private NtlmAuthLevel _level;
-		private byte[] _challenge;
-		private string _host;
 		private string _domain;
 		private string _username;
-		private string _password;
-		private Type2Message _type2;
-		private byte[] _lm;
-		private byte[] _nt;
 		
 		internal const string LegacyAPIWarning = 
 			"Use of this API is highly discouraged, " +
@@ -64,57 +57,8 @@ namespace Nancy.Authentication.Ntlm.Protocol
 		{
 			Decode (message);
 		}
-
-		~Type3Message () 
-		{
-			if (_challenge != null)
-				Array.Clear (_challenge, 0, _challenge.Length);
-			if (_lm != null)
-				Array.Clear (_lm, 0, _lm.Length);
-			if (_nt != null)
-				Array.Clear (_nt, 0, _nt.Length);
-		}
-
-		// Default auth level
-
-		static NtlmAuthLevel _default = NtlmAuthLevel.LM_and_NTLM_and_try_NTLMv2_Session;
-
-		public static NtlmAuthLevel DefaultAuthLevel 
-        {
-			get { return _default; }
-			set { _default = value; }
-		}
-
-		public NtlmAuthLevel Level 
-        {
-			get { return _level; }
-			set { _level = value; }
-		}
-		
+        
 		// properties
-
-		[Obsolete (LegacyAPIWarning)]
-		public byte[] Challenge {
-			get { 
-				if (_challenge == null)
-					return null;
-				return (byte[]) _challenge.Clone (); }
-			set { 
-				if ((_type2 != null) || (_level != NtlmAuthLevel.LM_and_NTLM))
-					throw new InvalidOperationException (
-						"Refusing to use legacy-mode LM/NTLM authentication " +
-							"unless explicitly enabled using DefaultAuthLevel.");
-				
-				if (value == null)
-					throw new ArgumentNullException ("Challenge");
-				if (value.Length != 8) {
-					string msg = "Invalid Challenge Length (should be 8 bytes).";
-					throw new ArgumentException (msg, "Challenge");
-				}
-				_challenge = (byte[]) value.Clone (); 
-			}
-		}
-
 		public string Domain 
         {
 			get 
@@ -125,23 +69,13 @@ namespace Nancy.Authentication.Ntlm.Protocol
         
 		public string Username 
         {
-			get { return _username; }
-			set { _username = value; }
-		}
-
-		public byte[] LM 
-        {
-			get { return _lm; }
-		}
-
-		public byte[] NT 
-        {
-			get { return _nt; }
-			set { _nt = value; }
+			get 
+            { 
+                return _username; 
+            }
 		}
 
 		// methods
-
 		protected override void Decode (byte[] message)
 		{
 			base.Decode (message);
@@ -152,8 +86,6 @@ namespace Nancy.Authentication.Ntlm.Protocol
 				throw new ArgumentException (msg, "message");
 			}
 
-			_password = null;
-
             if (message.Length >= 64)
             {
                 Flags = (NtlmFlags)BitConverterLE.ToUInt32(message, 60);
@@ -162,17 +94,7 @@ namespace Nancy.Authentication.Ntlm.Protocol
             {
                 Flags = (NtlmFlags)0x8201;
             }
-			
-            //int lm_len = BitConverterLE.ToUInt16 (message, 12);
-            //int lm_off = BitConverterLE.ToUInt16 (message, 16);
-            //_lm = new byte [lm_len];
-            //Buffer.BlockCopy (message, lm_off, _lm, 0, lm_len);
-
-            //int nt_len = BitConverterLE.ToUInt16 (message, 20);
-            //int nt_off = BitConverterLE.ToUInt16 (message, 24);
-            //_nt = new byte [nt_len];
-            //Buffer.BlockCopy (message, nt_off, _nt, 0, nt_len);
-			
+		
 			int dom_len = BitConverterLE.ToUInt16 (message, 28);
 			int dom_off = BitConverterLE.ToUInt16 (message, 32);
 			_domain = DecodeString (message, dom_off, dom_len);
@@ -180,10 +102,6 @@ namespace Nancy.Authentication.Ntlm.Protocol
 			int user_len = BitConverterLE.ToUInt16 (message, 36);
 			int user_off = BitConverterLE.ToUInt16 (message, 40);
 			_username = DecodeString (message, user_off, user_len);
-			
-            //int host_len = BitConverterLE.ToUInt16 (message, 44);
-            //int host_off = BitConverterLE.ToUInt16 (message, 48);
-            //_host = DecodeString (message, host_off, host_len);
 		}
 
 		string DecodeString (byte[] buffer, int offset, int len)
@@ -196,16 +114,6 @@ namespace Nancy.Authentication.Ntlm.Protocol
             {
                 return Encoding.ASCII.GetString(buffer, offset, len);
             }
-		}
-
-		byte[] EncodeString (string text)
-		{
-			if (text == null)
-				return new byte [0];
-			if ((Flags & NtlmFlags.NegotiateUnicode) != 0)
-				return Encoding.Unicode.GetBytes (text);
-			else
-				return Encoding.ASCII.GetBytes (text);
 		}
 
 		public override byte[] GetBytes ()
