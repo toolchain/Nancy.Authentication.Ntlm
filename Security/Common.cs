@@ -187,7 +187,7 @@ namespace Nancy.Authentication.Ntlm.Security
                 }
             }
 
-            public byte[] GetSecBufferByteArray()
+            public byte[] GetBytes()
             {
                 byte[] Buffer = null;
 
@@ -241,16 +241,6 @@ namespace Nancy.Authentication.Ntlm.Security
 
                 return (Buffer);
             }
-
-            /*public SecBuffer GetSecBuffer()
-            {
-                if(pBuffers == IntPtr.Zero)
-                {
-                    throw new InvalidOperationException("Object has already been disposed!!!");
-                }
-
-                return((SecBuffer)Marshal.PtrToStructure(pBuffers,typeof(SecBuffer)));
-            }*/
         }
         #endregion
     }

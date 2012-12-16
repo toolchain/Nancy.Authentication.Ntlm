@@ -60,7 +60,7 @@ namespace Nancy.Authentication.Ntlm.Security
             }
             finally
             {
-                message = ServerToken.GetSecBufferByteArray();
+                message = ServerToken.GetBytes();
 
                 ClientToken.Dispose();
                 ServerToken.Dispose();
