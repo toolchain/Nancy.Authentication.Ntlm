@@ -50,12 +50,7 @@
   <ItemGroup>
     <Compile Include="Security\EndPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Cryptography\Context.cs" />
-    <Compile Include="Cryptography\Hash.cs" />
     <Compile Include="Protocol\BitConverterLE.cs" />
-    <Compile Include="Cryptography\API.cs" />
-    <Compile Include="Cryptography\MD4.cs" />
-    <Compile Include="Cryptography\Provider.cs" />
     <Compile Include="Protocol\MessageBase.cs" />
     <Compile Include="Protocol\NtlmAuthLevel.cs" />
     <Compile Include="Protocol\NtlmFlags.cs" />
