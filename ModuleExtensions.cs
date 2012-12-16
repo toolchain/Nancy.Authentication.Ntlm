@@ -66,7 +66,7 @@ namespace Nancy.Authentication.Ntlm
                                                 response.Cookies.Add(new NancyCookie("NTLM", stateId));
                                                 response.StatusCode = HttpStatusCode.Unauthorized;
                                                 response.Headers.Add("Connection", "Keep-Alive");
-                                                response.Headers.Add("WWW-Authenticate", "NTLM " + Convert.ToBase64String(authenticationState.Token.GetSecBufferByteArray()));
+                                                response.Headers.Add("WWW-Authenticate", "NTLM " + Convert.ToBase64String(token));
                                                 return response;
                                             }
                                             break;
@@ -92,10 +92,6 @@ namespace Nancy.Authentication.Ntlm
                                 catch (KeyNotFoundException)
                                 {
                                     return Unauthorized();
-                                }
-                                finally
-                                {
-                                    authenticationState.Token.Dispose();
                                 }
                             }
                         }

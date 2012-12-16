@@ -9,6 +9,5 @@ namespace Nancy.Authentication.Ntlm.Security
     {
         public Common.SecurityHandle Credentials;
         public Common.SecurityHandle Context;
-        public Common.SecurityBufferDesciption Token;
     }
 }

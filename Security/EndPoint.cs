@@ -14,6 +14,7 @@ namespace Nancy.Authentication.Ntlm.Security
         public static bool IsServerChallengeAcquired(ref byte[] message, out State serverState)
         {
             Common.SecurityBufferDesciption ClientToken = new Common.SecurityBufferDesciption(message);
+            Common.SecurityBufferDesciption ServerToken = new Common.SecurityBufferDesciption(Common.MaximumTokenSize);
 
             try
             {
@@ -23,7 +24,6 @@ namespace Nancy.Authentication.Ntlm.Security
                 {
                     Credentials = new Common.SecurityHandle(0),
                     Context = new Common.SecurityHandle(0),
-                    Token = new Common.SecurityBufferDesciption(Common.MaximumTokenSize)
                 };
 
                 result = AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name,
@@ -48,7 +48,7 @@ namespace Nancy.Authentication.Ntlm.Security
                     Common.StandardContextAttributes,                       // [in] required context attributes
                     Common.SecurityNativeDataRepresentation,                // [in] data representation on the target
                     out serverState.Context,                                // [in/out] receives the new context handle    
-                    out serverState.Token,                                  // [in/out] pointer to the output buffers
+                    out ServerToken,                                        // [in/out] pointer to the output buffers
                     out Common.NewContextAttributes,                        // [out] receives the context attributes        
                     out Common.NewLifeTime);                                // [out] receives the life span of the security context
 
@@ -60,7 +60,10 @@ namespace Nancy.Authentication.Ntlm.Security
             }
             finally
             {
+                message = ServerToken.GetSecBufferByteArray();
+
                 ClientToken.Dispose();
+                ServerToken.Dispose();
             }
 
             return true;
@@ -69,6 +72,7 @@ namespace Nancy.Authentication.Ntlm.Security
         public static bool IsClientResponseValid(byte[] message, ref State serverState)
         {
             Common.SecurityBufferDesciption ClientToken = new Common.SecurityBufferDesciption(message);
+            Common.SecurityBufferDesciption ServerToken = new Common.SecurityBufferDesciption(Common.MaximumTokenSize);
 
             try
             {
@@ -80,7 +84,7 @@ namespace Nancy.Authentication.Ntlm.Security
                     Common.StandardContextAttributes,                       // [in] required context attributes
                     Common.SecurityNativeDataRepresentation,                // [in] data representation on the target
                     out serverState.Context,                                // [in/out] receives the new context handle    
-                    out serverState.Token,                                  // [in/out] pointer to the output buffers
+                    out ServerToken,                                        // [in/out] pointer to the output buffers
                     out Common.NewContextAttributes,                        // [out] receives the context attributes        
                     out Common.NewLifeTime);                                // [out] receives the life span of the security context
 
@@ -92,6 +96,7 @@ namespace Nancy.Authentication.Ntlm.Security
             finally
             {
                 ClientToken.Dispose();
+                ServerToken.Dispose();
             }
 
             return true;
