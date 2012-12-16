@@ -41,38 +41,22 @@ namespace Nancy.Authentication.Ntlm.Protocol
 {
 	public class Type3Message : MessageBase 
     {
-		private string _domain;
-		private string _username;
-		
-		internal const string LegacyAPIWarning = 
-			"Use of this API is highly discouraged, " +
-			"it selects legacy-mode LM/NTLM authentication, which sends " +
-			"your password in very weak encryption over the wire even if " +
-			"the server supports the more secure NTLMv2 / NTLMv2 Session. " +
-			"You need to use the new `Type3Message (Type2Message)' constructor " +
-			"to use the more secure NTLMv2 / NTLMv2 Session authentication modes. " +
-			"These require the Type 2 message from the server to compute the response.";
-		
 		public Type3Message (byte[] message) : base (3)
 		{
 			Decode (message);
 		}
         
 		// properties
-		public string Domain 
+        public string Domain
         {
-			get 
-            { 
-                return _domain; 
-            }
-		}
+            get;
+            private set;
+        }
         
 		public string Username 
         {
-			get 
-            { 
-                return _username; 
-            }
+            get;
+            private set;
 		}
 
 		// methods
@@ -97,11 +81,11 @@ namespace Nancy.Authentication.Ntlm.Protocol
 		
 			int dom_len = BitConverterLE.ToUInt16 (message, 28);
 			int dom_off = BitConverterLE.ToUInt16 (message, 32);
-			_domain = DecodeString (message, dom_off, dom_len);
+			this.Domain = DecodeString (message, dom_off, dom_len);
 
 			int user_len = BitConverterLE.ToUInt16 (message, 36);
 			int user_off = BitConverterLE.ToUInt16 (message, 40);
-			_username = DecodeString (message, user_off, user_len);
+			this.Username = DecodeString (message, user_off, user_len);
 		}
 
 		string DecodeString (byte[] buffer, int offset, int len)
