@@ -13,8 +13,6 @@
 // b.	The NTLM Authentication Protocol, Copyright © 2003 Eric Glass
 //	http://davenport.sourceforge.net/ntlm.html
 //
-
-//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including

@@ -99,7 +99,5 @@ namespace Nancy.Authentication.Ntlm.Protocol
 			}
 			return (BitConverterLE.ToUInt32 (message, 8) == _type);
 		}
-
-		public abstract byte[] GetBytes ();
 	}
 }

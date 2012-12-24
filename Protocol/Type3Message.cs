@@ -46,13 +46,18 @@ namespace Nancy.Authentication.Ntlm.Protocol
 			Decode (message);
 		}
         
-		// properties
+		/// <summary>
+		/// Domain name
+		/// </summary>
         public string Domain
         {
             get;
             private set;
         }
         
+        /// <summary>
+        /// Username
+        /// </summary>
 		public string Username 
         {
             get;
@@ -98,108 +103,6 @@ namespace Nancy.Authentication.Ntlm.Protocol
             {
                 return Encoding.ASCII.GetString(buffer, offset, len);
             }
-		}
-
-		public override byte[] GetBytes ()
-		{
-            //byte[] target = EncodeString (_domain);
-            //byte[] user = EncodeString (_username);
-            //byte[] host = EncodeString (_host);
-
-            //byte[] lm, ntlm;
-            //if (_type2 == null) {
-            //    if (_level != NtlmAuthLevel.LM_and_NTLM)
-            //        throw new InvalidOperationException (
-            //            "Refusing to use legacy-mode LM/NTLM authentication " +
-            //                "unless explicitly enabled using DefaultAuthLevel.");
-				
-            //    using (var legacy = new ChallengeResponse (_password, _challenge)) {
-            //        lm = legacy.LM;
-            //        ntlm = legacy.NT;
-            //    }
-            //} else {
-            //    ChallengeResponse2.Compute (_type2, _level, _username, _password, out lm, out ntlm);
-            //}
-
-            //var lmresp_len = lm != null ? lm.Length : 0;
-            //var ntresp_len = ntlm != null ? ntlm.Length : 0;
-
-            //byte[] data = PrepareMessage (64 + target.Length + user.Length + host.Length + lmresp_len + ntresp_len);
-
-            //// LM response
-            //short lmresp_off = (short)(64 + target.Length + user.Length + host.Length);
-            //data [12] = (byte)lmresp_len;
-            //data [13] = (byte)0x00;
-            //data [14] = (byte)lmresp_len;
-            //data [15] = (byte)0x00;
-            //data [16] = (byte)lmresp_off;
-            //data [17] = (byte)(lmresp_off >> 8);
-
-            //// NT response
-            //short ntresp_off = (short)(lmresp_off + lmresp_len);
-            //data [20] = (byte)ntresp_len;
-            //data [21] = (byte)(ntresp_len >> 8);
-            //data [22] = (byte)ntresp_len;
-            //data [23] = (byte)(ntresp_len >> 8);
-            //data [24] = (byte)ntresp_off;
-            //data [25] = (byte)(ntresp_off >> 8);
-
-            //// target
-            //short dom_len = (short)target.Length;
-            //short dom_off = 64;
-            //data [28] = (byte)dom_len;
-            //data [29] = (byte)(dom_len >> 8);
-            //data [30] = data [28];
-            //data [31] = data [29];
-            //data [32] = (byte)dom_off;
-            //data [33] = (byte)(dom_off >> 8);
-
-            //// username
-            //short uname_len = (short)user.Length;
-            //short uname_off = (short)(dom_off + dom_len);
-            //data [36] = (byte)uname_len;
-            //data [37] = (byte)(uname_len >> 8);
-            //data [38] = data [36];
-            //data [39] = data [37];
-            //data [40] = (byte)uname_off;
-            //data [41] = (byte)(uname_off >> 8);
-
-            //// host
-            //short host_len = (short)host.Length;
-            //short host_off = (short)(uname_off + uname_len);
-            //data [44] = (byte)host_len;
-            //data [45] = (byte)(host_len >> 8);
-            //data [46] = data [44];
-            //data [47] = data [45];
-            //data [48] = (byte)host_off;
-            //data [49] = (byte)(host_off >> 8);
-
-            //// message length
-            //short msg_len = (short)data.Length;
-            //data [56] = (byte)msg_len;
-            //data [57] = (byte)(msg_len >> 8);
-
-            //int flags = (int)Flags;
-
-            //// options flags
-            //data [60] = (byte)flags;
-            //data [61] = (byte)((uint)flags >> 8);
-            //data [62] = (byte)((uint)flags >> 16);
-            //data [63] = (byte)((uint)flags >> 24);
-
-            //Buffer.BlockCopy (target, 0, data, dom_off, target.Length);
-            //Buffer.BlockCopy (user, 0, data, uname_off, user.Length);
-            //Buffer.BlockCopy (host, 0, data, host_off, host.Length);
-
-            //if (lm != null) {
-            //    Buffer.BlockCopy (lm, 0, data, lmresp_off, lm.Length);
-            //    Array.Clear (lm, 0, lm.Length);
-            //}
-            //Buffer.BlockCopy (ntlm, 0, data, ntresp_off, ntlm.Length);
-            //Array.Clear (ntlm, 0, ntlm.Length);
-
-            //return data;
-            return new byte[40];
 		}
 	}
 }
