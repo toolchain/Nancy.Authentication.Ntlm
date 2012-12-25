@@ -15,7 +15,7 @@ namespace Nancy.Authentication.Ntlm
 {
     public static class ModuleExtensions
     {
-        public static Dictionary<string, State> Unfinished = new Dictionary<string, State>();
+        internal static Dictionary<string, State> Sessions = new Dictionary<string, State>();
 
         private static Response Unauthorized()
         {
@@ -44,7 +44,7 @@ namespace Nancy.Authentication.Ntlm
                             {
                                 byte[] token = Convert.FromBase64String(AuthorizationString.Substring(5));
 
-                                State authenticationState = new State();
+                                var state = new State();
 
                                 try
                                 {
@@ -57,10 +57,10 @@ namespace Nancy.Authentication.Ntlm
                                     {
                                         case 1:
                                             // Message of type 1 was received
-                                            if (EndPoint.IsServerChallengeAcquired(ref token, out authenticationState))
+                                            if (EndPoint.IsServerChallengeAcquired(ref token, out state))
                                             {
                                                 var stateId = Guid.NewGuid().ToString();
-                                                Unfinished.Add(stateId, authenticationState);
+                                                Sessions.Add(stateId, state);
 
                                                 Response response = new Response();
                                                 response.Cookies.Add(new NancyCookie("NTLM", stateId));
@@ -72,10 +72,10 @@ namespace Nancy.Authentication.Ntlm
                                             break;
                                         case 3:
                                             // Message of type 3 was received
-                                            authenticationState = Unfinished[module.Request.Cookies["NTLM"]];
-                                            Unfinished.Remove(module.Request.Cookies["NTLM"]);
+                                            state = Sessions[module.Request.Cookies["NTLM"]];
+                                            Sessions.Remove(module.Request.Cookies["NTLM"]);
 
-                                            if (EndPoint.IsClientResponseValid(token, ref authenticationState))
+                                            if (EndPoint.IsClientResponseValid(token, ref state))
                                             {
                                                 Type3Message type3Message = new Type3Message(token);
                                                 // module.Context.Response.Headers.Add("Authorization", "NTLM " + Convert.ToBase64String(clientMessage));

@@ -11,7 +11,7 @@ namespace Nancy.Authentication.Ntlm.Security
 {
     class EndPoint
     {
-        public static bool IsServerChallengeAcquired(ref byte[] message, out State serverState)
+        public static bool IsServerChallengeAcquired(ref byte[] message, out State state)
         {
             Common.SecurityBufferDesciption ClientToken = new Common.SecurityBufferDesciption(message);
             Common.SecurityBufferDesciption ServerToken = new Common.SecurityBufferDesciption(Common.MaximumTokenSize);
@@ -20,11 +20,7 @@ namespace Nancy.Authentication.Ntlm.Security
             {
                 int result;
 
-                serverState = new State()
-                {
-                    Credentials = new Common.SecurityHandle(0),
-                    Context = new Common.SecurityHandle(0),
-                };
+                state = new State();
 
                 result = AcquireCredentialsHandle(WindowsIdentity.GetCurrent().Name,
                     "NTLM",
@@ -33,7 +29,7 @@ namespace Nancy.Authentication.Ntlm.Security
                     IntPtr.Zero,
                     0,
                     IntPtr.Zero,
-                    ref serverState.Credentials,
+                    ref state.Credentials,
                     ref Common.NewLifeTime);
 
                 if (result != Common.SuccessfulResult)
@@ -42,15 +38,15 @@ namespace Nancy.Authentication.Ntlm.Security
                     return false;
                 }
 
-                result = AcceptSecurityContext(ref serverState.Credentials, // [in] handle to the credentials
-                    IntPtr.Zero,                                            // [in/out] handle of partially formed context.  Always NULL the first time through
-                    ref ClientToken,                                        // [in] pointer to the input buffers
-                    Common.StandardContextAttributes,                       // [in] required context attributes
-                    Common.SecurityNativeDataRepresentation,                // [in] data representation on the target
-                    out serverState.Context,                                // [in/out] receives the new context handle    
-                    out ServerToken,                                        // [in/out] pointer to the output buffers
-                    out Common.NewContextAttributes,                        // [out] receives the context attributes        
-                    out Common.NewLifeTime);                                // [out] receives the life span of the security context
+                result = AcceptSecurityContext(ref state.Credentials,   // [in] handle to the credentials
+                    IntPtr.Zero,                                        // [in/out] handle of partially formed context.  Always NULL the first time through
+                    ref ClientToken,                                    // [in] pointer to the input buffers
+                    Common.StandardContextAttributes,                   // [in] required context attributes
+                    Common.SecurityNativeDataRepresentation,            // [in] data representation on the target
+                    out state.Context,                                  // [in/out] receives the new context handle    
+                    out ServerToken,                                    // [in/out] pointer to the output buffers
+                    out Common.NewContextAttributes,                    // [out] receives the context attributes        
+                    out Common.NewLifeTime);                            // [out] receives the life span of the security context
 
                 if (result != Common.IntermediateResult)
                 {
@@ -69,7 +65,7 @@ namespace Nancy.Authentication.Ntlm.Security
             return true;
         }
 
-        public static bool IsClientResponseValid(byte[] message, ref State serverState)
+        public static bool IsClientResponseValid(byte[] message, ref State state)
         {
             Common.SecurityBufferDesciption ClientToken = new Common.SecurityBufferDesciption(message);
             Common.SecurityBufferDesciption ServerToken = new Common.SecurityBufferDesciption(Common.MaximumTokenSize);
@@ -78,15 +74,15 @@ namespace Nancy.Authentication.Ntlm.Security
             {
                 int result;
 
-                result = AcceptSecurityContext(ref serverState.Credentials, // [in] handle to the credentials
-                    ref serverState.Context,                                // [in/out] handle of partially formed context.  Always NULL the first time through
-                    ref ClientToken,                                        // [in] pointer to the input buffers
-                    Common.StandardContextAttributes,                       // [in] required context attributes
-                    Common.SecurityNativeDataRepresentation,                // [in] data representation on the target
-                    out serverState.Context,                                // [in/out] receives the new context handle    
-                    out ServerToken,                                        // [in/out] pointer to the output buffers
-                    out Common.NewContextAttributes,                        // [out] receives the context attributes        
-                    out Common.NewLifeTime);                                // [out] receives the life span of the security context
+                result = AcceptSecurityContext(ref state.Credentials,   // [in] handle to the credentials
+                    ref state.Context,                                  // [in/out] handle of partially formed context.  Always NULL the first time through
+                    ref ClientToken,                                    // [in] pointer to the input buffers
+                    Common.StandardContextAttributes,                   // [in] required context attributes
+                    Common.SecurityNativeDataRepresentation,            // [in] data representation on the target
+                    out state.Context,                                  // [in/out] receives the new context handle    
+                    out ServerToken,                                    // [in/out] pointer to the output buffers
+                    out Common.NewContextAttributes,                    // [out] receives the context attributes        
+                    out Common.NewLifeTime);                            // [out] receives the life span of the security context
 
                 if (result != Common.SuccessfulResult)
                 {

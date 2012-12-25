@@ -41,7 +41,13 @@ namespace Nancy.Authentication.Ntlm.Security
         {
             public IntPtr LowPart;
             public IntPtr HighPart;
+
             public SecurityHandle(int dummy)
+            {
+                LowPart = HighPart = IntPtr.Zero;
+            }
+
+            public void Reset()
             {
                 LowPart = HighPart = IntPtr.Zero;
             }
