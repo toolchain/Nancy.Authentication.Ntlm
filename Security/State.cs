@@ -15,7 +15,7 @@ namespace Nancy.Authentication.Ntlm.Security
             this.Credentials = new Common.SecurityHandle(0);
             this.Context = new Common.SecurityHandle(0);
 
-            this.LastSeen = DateTime.UtcNow;
+            this.LastSeen = DateTime.MinValue;
         }
 
         /// <summary>

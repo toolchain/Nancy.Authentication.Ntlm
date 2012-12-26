@@ -51,7 +51,7 @@ namespace Nancy.Authentication.Ntlm
                                     // Session stored on server is outdated
                                     var authorization = module.Request.Headers.Authorization;
 
-                                    if (string.IsNullOrEmpty(authorization) && (authorization.StartsWith("NTLM ")))
+                                    if (!string.IsNullOrEmpty(authorization) || (authorization.StartsWith("NTLM ")))
                                     {
                                         byte[] token = Convert.FromBase64String(authorization.Substring(5));
 
@@ -68,11 +68,9 @@ namespace Nancy.Authentication.Ntlm
                                                 // Message of type 1 was received
                                                 if (EndPoint.IsServerChallengeAcquired(ref token, out state))
                                                 {
-                                                    var stateId = Guid.NewGuid().ToString();
-                                                    Sessions.Add(stateId, state);
+                                                    Sessions[module.Request.Cookies["NTLM"]] = state;
 
                                                     Response response = new Response();
-                                                    response.Cookies.Add(new NancyCookie("NTLM", stateId));
                                                     response.StatusCode = HttpStatusCode.Unauthorized;
                                                     response.Headers.Add("WWW-Authenticate", "NTLM " + Convert.ToBase64String(token));
                                                     return response;
