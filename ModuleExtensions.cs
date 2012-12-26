@@ -57,6 +57,9 @@ namespace Nancy.Authentication.Ntlm
             return null;
         }
 
+        /// <summary>
+        /// Cleans up old sessions
+        /// </summary>
         private static void CleanupSessions()
         {
             var random = new Random();
