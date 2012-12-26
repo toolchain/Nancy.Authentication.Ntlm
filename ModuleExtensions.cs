@@ -20,17 +20,54 @@ namespace Nancy.Authentication.Ntlm
         /// <summary>
         /// Sends 401 Unauthorized response to browser
         /// </summary>
+        /// <param name="token"></param>
         /// <returns></returns>
-        private static Response Unauthorized()
+        private static Response SendUnauthorized(byte[] token)
         {
-            var stateId = Guid.NewGuid().ToString();
-            Sessions.Add(stateId, new State());
-
             var response = new Response();
-            response.Cookies.Add(new NancyCookie("NTLM", stateId));
+            var authorization = string.Empty;
+
+            if (token == null)
+            {
+                var stateId = Guid.NewGuid().ToString();
+                Sessions.Add(stateId, new State());
+                response.Cookies.Add(new NancyCookie("NTLM", stateId));
+            }
+            else
+            {
+                authorization = string.Concat(" ", Convert.ToBase64String(token));
+            }
+            
             response.StatusCode = HttpStatusCode.Unauthorized;
-            response.Headers.Add("WWW-Authenticate", "NTLM");
+            response.Headers.Add("WWW-Authenticate", string.Concat("NTLM", authorization));
             return response;
+        }
+
+        /// <summary>
+        /// Aquires token from authorization string
+        /// </summary>
+        /// <param name="authorization"></param>
+        /// <returns></returns>
+        private static byte[] AquireToken(string authorization)
+        {
+            if (!string.IsNullOrEmpty(authorization) || (authorization.StartsWith("NTLM ")))
+            {
+                return Convert.FromBase64String(authorization.Substring(5)); ;
+            }
+            return null;
+        }
+
+        private static void CleanupSessions()
+        {
+            var random = new Random();
+
+            if (random.Next(0, 10) % 3 == 0)
+            {
+                foreach (var session in Sessions.Where(x => x.Value.isOlder(3600)))
+                {
+                    Sessions.Remove(session.Key);
+                }
+            }
         }
 
         public static void RequiresNtlmAuthentication(this NancyModule module)
@@ -48,13 +85,11 @@ namespace Nancy.Authentication.Ntlm
                                 // Session with NTLM cookie identifier is present
                                 if (Sessions[module.Request.Cookies["NTLM"]].isOlder(3600))
                                 {
-                                    // Session stored on server is outdated
-                                    var authorization = module.Request.Headers.Authorization;
+                                    // Session stored on server is outdated, so authorization process need to take place
+                                    var token = AquireToken(module.Request.Headers.Authorization);
 
-                                    if (!string.IsNullOrEmpty(authorization) || (authorization.StartsWith("NTLM ")))
+                                    if (token != null)
                                     {
-                                        byte[] token = Convert.FromBase64String(authorization.Substring(5));
-
                                         var state = new State();
 
                                         // First eight bytes are header containing NTLMSSP\0 signature
@@ -69,11 +104,7 @@ namespace Nancy.Authentication.Ntlm
                                                 if (EndPoint.IsServerChallengeAcquired(ref token, out state))
                                                 {
                                                     Sessions[module.Request.Cookies["NTLM"]] = state;
-
-                                                    Response response = new Response();
-                                                    response.StatusCode = HttpStatusCode.Unauthorized;
-                                                    response.Headers.Add("WWW-Authenticate", "NTLM " + Convert.ToBase64String(token));
-                                                    return response;
+                                                    return SendUnauthorized(token);
                                                 }
                                                 break;
                                             case 3:
@@ -90,7 +121,7 @@ namespace Nancy.Authentication.Ntlm
                                                 else
                                                 {
                                                     Sessions.Remove(module.Request.Cookies["NTLM"]);
-                                                    return Unauthorized();
+                                                    return SendUnauthorized(null);
                                                 }
 
                                                 break;
@@ -99,24 +130,26 @@ namespace Nancy.Authentication.Ntlm
                                     else
                                     {
                                         // NTLM Authorization header was not present 
-                                        return Unauthorized();
+                                        return SendUnauthorized(null);
                                     }
                                 }
                                 else
                                 {
+                                    // Normal behaviour
+                                    CleanupSessions();
                                     Sessions[module.Request.Cookies["NTLM"]].UpdatePresence();
                                 }
                             }
                             else
                             {
                                 // Session with NTLM cookie identifier is not present
-                                return Unauthorized();
+                                return SendUnauthorized(null);
                             }
                         }
                         else
                         {
                             // NTLM cookie is not present
-                            return Unauthorized();
+                            return SendUnauthorized(null);
                         }
 
                         return null;
