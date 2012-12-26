@@ -47,6 +47,9 @@ namespace Nancy.Authentication.Ntlm.Security
                 LowPart = HighPart = IntPtr.Zero;
             }
 
+            /// <summary>
+            /// Resets all internal pointers to default value
+            /// </summary>
             public void Reset()
             {
                 LowPart = HighPart = IntPtr.Zero;

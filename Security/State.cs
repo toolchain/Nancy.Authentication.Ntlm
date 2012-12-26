@@ -33,13 +33,20 @@ namespace Nancy.Authentication.Ntlm.Security
         /// </summary>
         public DateTime LastSeen;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool isExpired()
+        public bool isOlder(int seconds)
         {
-            return (this.LastSeen.AddHours(2) < DateTime.UtcNow) ? true : false;
+            return (this.LastSeen.AddSeconds(seconds) < DateTime.UtcNow) ? true : false;
+        }
+
+        public void ResetHandles()
+        {
+            this.Credentials.Reset();
+            this.Context.Reset();
+        }
+
+        public void UpdatePresence()
+        {
+            this.LastSeen = DateTime.UtcNow;
         }
     }
 }
