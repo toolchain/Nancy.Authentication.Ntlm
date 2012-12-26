@@ -33,10 +33,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-
 namespace Nancy.Authentication.Ntlm.Protocol 
 {
+    using System;
+
 	[Flags]
 	public enum NtlmFlags : int 
     {

@@ -1,14 +1,11 @@
 ﻿// http://pinvoke.net/default.aspx/secur32/InitializeSecurityContext.html
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
-
 namespace Nancy.Authentication.Ntlm.Security
 {
+    using System;
+    using System.Runtime.InteropServices;
+    using System.Security.Principal;
+
     class EndPoint
     {
         public static bool IsServerChallengeAcquired(ref byte[] message, out State state)

@@ -34,12 +34,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Globalization;
-
 namespace Nancy.Authentication.Ntlm.Protocol 
 {
-	public abstract class MessageBase 
+    using System;
+
+    public abstract class MessageBase 
     {
 		static private byte[] header = { 0x4e, 0x54, 0x4c, 0x4d, 0x53, 0x53, 0x50, 0x00 };
 		

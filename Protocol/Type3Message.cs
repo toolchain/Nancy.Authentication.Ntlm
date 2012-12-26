@@ -33,12 +33,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Globalization;
-using System.Text;
-
 namespace Nancy.Authentication.Ntlm.Protocol 
 {
+    using System;
+    using System.Text;
+
 	public class Type3Message : MessageBase 
     {
 		public Type3Message (byte[] message) : base (3)

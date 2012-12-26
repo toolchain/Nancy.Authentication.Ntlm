@@ -27,10 +27,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-
 namespace Nancy.Authentication.Ntlm.Protocol
 {
+    using System;
+
 	internal sealed class BitConverterLE
 	{
 		private BitConverterLE ()
@@ -39,28 +39,40 @@ namespace Nancy.Authentication.Ntlm.Protocol
 
 		unsafe private static byte[] GetUShortBytes (byte *bytes)
 		{
-			if (BitConverter.IsLittleEndian)
-				return new byte [] { bytes [0], bytes [1] };
-			else
-				return new byte [] { bytes [1], bytes [0] };
+            if (BitConverter.IsLittleEndian)
+            {
+                return new byte[] { bytes[0], bytes[1] };
+            }
+            else
+            {
+                return new byte[] { bytes[1], bytes[0] };
+            }
 		}
 
 		unsafe private static byte[] GetUIntBytes (byte *bytes)
 		{
-			if (BitConverter.IsLittleEndian)
-				return new byte [] { bytes [0], bytes [1], bytes [2], bytes [3] };
-			else
-				return new byte [] { bytes [3], bytes [2], bytes [1], bytes [0] };
+            if (BitConverter.IsLittleEndian)
+            {
+                return new byte[] { bytes[0], bytes[1], bytes[2], bytes[3] };
+            }
+            else
+            {
+                return new byte[] { bytes[3], bytes[2], bytes[1], bytes[0] };
+            }
 		}
 
 		unsafe private static byte[] GetULongBytes (byte *bytes)
 		{
-			if (BitConverter.IsLittleEndian)
-				return new byte [] { bytes [0], bytes [1], bytes [2], bytes [3],
+            if (BitConverter.IsLittleEndian)
+            {
+                return new byte[] { bytes [0], bytes [1], bytes [2], bytes [3],
 						     bytes [4], bytes [5], bytes [6], bytes [7] };
-			else
-				return new byte [] { bytes [7], bytes [6], bytes [5], bytes [4],
+            }
+            else
+            {
+                return new byte[] { bytes [7], bytes [6], bytes [5], bytes [4],
 						     bytes [3], bytes [2], bytes [1], bytes [0] };
+            }
 		}
 
 		unsafe internal static byte[] GetBytes (bool value)
@@ -115,10 +127,13 @@ namespace Nancy.Authentication.Ntlm.Protocol
 
 		unsafe private static void UShortFromBytes (byte *dst, byte[] src, int startIndex)
 		{
-			if (BitConverter.IsLittleEndian) {
+			if (BitConverter.IsLittleEndian) 
+            {
 				dst [0] = src [startIndex];
 				dst [1] = src [startIndex + 1];
-			} else {
+			} 
+            else 
+            {
 				dst [0] = src [startIndex + 1];
 				dst [1] = src [startIndex];
 			}
@@ -126,12 +141,15 @@ namespace Nancy.Authentication.Ntlm.Protocol
 
 		unsafe private static void UIntFromBytes (byte *dst, byte[] src, int startIndex)
 		{
-			if (BitConverter.IsLittleEndian) {
+			if (BitConverter.IsLittleEndian) 
+            {
 				dst [0] = src [startIndex];
 				dst [1] = src [startIndex + 1];
 				dst [2] = src [startIndex + 2];
 				dst [3] = src [startIndex + 3];
-			} else {
+			} 
+            else 
+            {
 				dst [0] = src [startIndex + 3];
 				dst [1] = src [startIndex + 2];
 				dst [2] = src [startIndex + 1];

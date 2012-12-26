@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-
-namespace Nancy.Authentication.Ntlm.Security
+﻿namespace Nancy.Authentication.Ntlm.Security
 {
+    using System;
+    using System.Runtime.InteropServices;
+
     public class Common
     {
         #region Private constants

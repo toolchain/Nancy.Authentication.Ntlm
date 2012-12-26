@@ -1,18 +1,12 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Web;
-
-using Nancy;
-using Nancy.Cookies;
-
-using Nancy.Authentication.Ntlm.Protocol;
-using Nancy.Authentication.Ntlm.Security;
-
-namespace Nancy.Authentication.Ntlm
+﻿namespace Nancy.Authentication.Ntlm
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Nancy.Authentication.Ntlm.Protocol;
+    using Nancy.Authentication.Ntlm.Security;
+    using Nancy.Cookies;
+
     public static class ModuleExtensions
     {
         internal static Dictionary<string, State> Sessions = new Dictionary<string, State>();

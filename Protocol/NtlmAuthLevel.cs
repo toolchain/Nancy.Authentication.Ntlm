@@ -23,9 +23,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 
-namespace Nancy.Authentication.Ntlm.Protocol {
+namespace Nancy.Authentication.Ntlm.Protocol 
+{
+    using System;
 	
 	/*
 	 * On Windows, this is controlled by a registry setting
@@ -36,7 +37,8 @@ namespace Nancy.Authentication.Ntlm.Protocol {
 	 * is LM_and_NTLM_and_try_NTLMv2_Session.
 	 */
 	
-	public enum NtlmAuthLevel {
+	public enum NtlmAuthLevel 
+    {
 		/* Use LM and NTLM, never use NTLMv2 session security. */
 		LM_and_NTLM,
 		
