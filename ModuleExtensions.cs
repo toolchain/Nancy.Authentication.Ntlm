@@ -93,7 +93,7 @@ namespace Nancy.Authentication.Ntlm
 
                                     if (token != null)
                                     {
-                                        var state = new State();
+                                        var state = Sessions[module.Request.Cookies["NTLM"]];
 
                                         // First eight bytes are header containing NTLMSSP\0 signature
                                         // Next byte contains type of the message recieved.
@@ -103,37 +103,35 @@ namespace Nancy.Authentication.Ntlm
                                         switch (token[8])
                                         {
                                             case 1:
-                                                // Message of type 1 was received
+                                                #region Message of type 1 was received
                                                 if (EndPoint.IsServerChallengeAcquired(ref token, out state))
                                                 {
                                                     Sessions[module.Request.Cookies["NTLM"]] = state;
                                                     return SendUnauthorized(token);
                                                 }
-                                                break;
-                                            case 3:
-                                                // Message of type 3 was received
-                                                state = Sessions[module.Request.Cookies["NTLM"]];
 
+                                                break;
+                                                #endregion
+                                            case 3:
+                                                #region Message of type 3 was received
                                                 if (EndPoint.IsClientResponseValid(token, ref state))
                                                 {
                                                     Type3Message type3Message = new Type3Message(token);
 
                                                     Sessions[module.Request.Cookies["NTLM"]].ResetHandles();
                                                     Sessions[module.Request.Cookies["NTLM"]].UpdatePresence();
+
+                                                    // Authorization successful 
+                                                    return null;
                                                 }
                                                 else
                                                 {
                                                     Sessions.Remove(module.Request.Cookies["NTLM"]);
-                                                    return SendUnauthorized(null);
                                                 }
 
                                                 break;
+                                                #endregion
                                         }
-                                    }
-                                    else
-                                    {
-                                        // NTLM Authorization header was not present 
-                                        return SendUnauthorized(null);
                                     }
                                 }
                                 else
@@ -141,21 +139,14 @@ namespace Nancy.Authentication.Ntlm
                                     // Normal behaviour
                                     CleanupSessions();
                                     Sessions[module.Request.Cookies["NTLM"]].UpdatePresence();
+
+                                    // Operation successful 
+                                    return null;
                                 }
                             }
-                            else
-                            {
-                                // Session with NTLM cookie identifier is not present
-                                return SendUnauthorized(null);
-                            }
-                        }
-                        else
-                        {
-                            // NTLM cookie is not present
-                            return SendUnauthorized(null);
                         }
 
-                        return null;
+                        return SendUnauthorized(null);
                     }));
         }
     }
