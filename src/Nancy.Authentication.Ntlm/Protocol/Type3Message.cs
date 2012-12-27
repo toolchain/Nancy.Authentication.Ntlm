@@ -39,10 +39,13 @@ namespace Nancy.Authentication.Ntlm.Protocol
     using System.Text;
     using Nancy.Authentication.Ntlm.Security;
 
-	public class Type3Message : MessageBase 
+	public class Type3Message
     {
-		public Type3Message (byte[] message) : base (3)
+        static private byte[] header = { 0x4e, 0x54, 0x4c, 0x4d, 0x53, 0x53, 0x50, 0x00 };
+
+		public Type3Message (byte[] message) // : base (3)
 		{
+            _type = 3;
 			Decode (message);
 		}
         
@@ -64,10 +67,34 @@ namespace Nancy.Authentication.Ntlm.Protocol
             private set;
 		}
 
+        private int _type;
+        private Common.NtlmFlags _flags;
+
+		public Common.NtlmFlags Flags 
+        {
+			get { return _flags; }
+			set { _flags = value; }
+		}
+
 		// methods
-		protected override void Decode (byte[] message)
+		private void Decode (byte[] message)
 		{
-			base.Decode (message);
+            //base.Decode (message);
+
+            if (message == null)
+                throw new ArgumentNullException("message");
+
+            if (message.Length < 12)
+            {
+                string msg = "Minimum Type3 message length is 12 bytes.";
+                throw new ArgumentOutOfRangeException("message", message.Length, msg);
+            }
+
+            if (!CheckHeader(message))
+            {
+                string msg = "Invalid Type3 message header.";
+                throw new ArgumentException(msg, "message");
+            }
 
 			if (BitConverterLE.ToUInt16 (message, 56) != message.Length) 
             {
@@ -86,10 +113,12 @@ namespace Nancy.Authentication.Ntlm.Protocol
 		
 			int dom_len = BitConverterLE.ToUInt16 (message, 28);
 			int dom_off = BitConverterLE.ToUInt16 (message, 32);
+
 			this.Domain = DecodeString (message, dom_off, dom_len);
 
 			int user_len = BitConverterLE.ToUInt16 (message, 36);
 			int user_off = BitConverterLE.ToUInt16 (message, 40);
+
 			this.Username = DecodeString (message, user_off, user_len);
 		}
 
@@ -103,6 +132,17 @@ namespace Nancy.Authentication.Ntlm.Protocol
             {
                 return Encoding.ASCII.GetString(buffer, offset, len);
             }
-		}
-	}
+        }
+
+        protected bool CheckHeader(byte[] message)
+        {
+            for (int i = 0; i < header.Length; i++)
+            {
+                if (message[i] != header[i])
+                    return false;
+            }
+            return (BitConverterLE.ToUInt32(message, 8) == _type);
+        }
+
+    }
 }
