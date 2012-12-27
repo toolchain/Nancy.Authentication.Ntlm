@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Nancy.Authentication.Ntlm.Protocol;
     using Nancy.Authentication.Ntlm.Security;
     using Nancy.Cookies;
 
@@ -110,7 +109,7 @@
                                                 #region Message of type 3 was received
                                                 if (EndPoint.IsClientResponseValid(token, ref state))
                                                 {
-                                                    Type3Message type3Message = new Type3Message(token);
+                                                    Message type3Message = new Message(token);
 
                                                     Sessions[module.Request.Cookies["NTLM"]].ResetHandles();
                                                     Sessions[module.Request.Cookies["NTLM"]].UpdatePresence();

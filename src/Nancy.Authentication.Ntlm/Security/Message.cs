@@ -33,17 +33,16 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-namespace Nancy.Authentication.Ntlm.Protocol 
+namespace Nancy.Authentication.Ntlm.Security 
 {
     using System;
     using System.Text;
-    using Nancy.Authentication.Ntlm.Security;
 
-	public class Type3Message
+	public class Message
     {
         static private byte[] header = { 0x4e, 0x54, 0x4c, 0x4d, 0x53, 0x53, 0x50, 0x00 };
 
-		public Type3Message (byte[] message) // : base (3)
+		public Message (byte[] message)
 		{
             _type = 3;
 			Decode (message);

@@ -27,7 +27,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-namespace Nancy.Authentication.Ntlm.Protocol
+namespace Nancy.Authentication.Ntlm.Security
 {
     using System;
 
