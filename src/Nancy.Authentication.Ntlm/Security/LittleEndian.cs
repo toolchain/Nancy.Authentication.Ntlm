@@ -31,9 +31,9 @@ namespace Nancy.Authentication.Ntlm.Security
 {
     using System;
 
-	internal sealed class BitConverterLE
+	internal sealed class LittleEndian
 	{
-		private BitConverterLE ()
+		private LittleEndian ()
 		{
 		}
 

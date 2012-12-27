@@ -95,7 +95,7 @@ namespace Nancy.Authentication.Ntlm.Security
                 throw new ArgumentException(msg, "message");
             }
 
-			if (BitConverterLE.ToUInt16 (message, 56) != message.Length) 
+			if (LittleEndian.ToUInt16 (message, 56) != message.Length) 
             {
 				string msg = "Invalid Type3 message length.";
 				throw new ArgumentException (msg, "message");
@@ -103,20 +103,20 @@ namespace Nancy.Authentication.Ntlm.Security
 
             if (message.Length >= 64)
             {
-                Flags = (Common.NtlmFlags)BitConverterLE.ToUInt32(message, 60);
+                Flags = (Common.NtlmFlags)LittleEndian.ToUInt32(message, 60);
             }
             else
             {
                 Flags = (Common.NtlmFlags)0x8201;
             }
 		
-			int dom_len = BitConverterLE.ToUInt16 (message, 28);
-			int dom_off = BitConverterLE.ToUInt16 (message, 32);
+			int dom_len = LittleEndian.ToUInt16 (message, 28);
+			int dom_off = LittleEndian.ToUInt16 (message, 32);
 
 			this.Domain = DecodeString (message, dom_off, dom_len);
 
-			int user_len = BitConverterLE.ToUInt16 (message, 36);
-			int user_off = BitConverterLE.ToUInt16 (message, 40);
+			int user_len = LittleEndian.ToUInt16 (message, 36);
+			int user_off = LittleEndian.ToUInt16 (message, 40);
 
 			this.Username = DecodeString (message, user_off, user_len);
 		}
@@ -140,7 +140,7 @@ namespace Nancy.Authentication.Ntlm.Security
                 if (message[i] != header[i])
                     return false;
             }
-            return (BitConverterLE.ToUInt32(message, 8) == _type);
+            return (LittleEndian.ToUInt32(message, 8) == _type);
         }
 
     }
