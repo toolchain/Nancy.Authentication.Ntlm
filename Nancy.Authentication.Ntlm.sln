@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nancy.Authentication.Ntlm", "Nancy.Authentication.Ntlm.csproj", "{E1696E18-CD52-4D66-BBBD-5D9460FBAAC2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nancy.Authentication.Ntlm", "src\Nancy.Authentication.Ntlm\Nancy.Authentication.Ntlm.csproj", "{E1696E18-CD52-4D66-BBBD-5D9460FBAAC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
