@@ -37,6 +37,7 @@ namespace Nancy.Authentication.Ntlm.Protocol
 {
     using System;
     using System.Text;
+    using Nancy.Authentication.Ntlm.Security;
 
 	public class Type3Message : MessageBase 
     {
@@ -76,11 +77,11 @@ namespace Nancy.Authentication.Ntlm.Protocol
 
             if (message.Length >= 64)
             {
-                Flags = (NtlmFlags)BitConverterLE.ToUInt32(message, 60);
+                Flags = (Common.NtlmFlags)BitConverterLE.ToUInt32(message, 60);
             }
             else
             {
-                Flags = (NtlmFlags)0x8201;
+                Flags = (Common.NtlmFlags)0x8201;
             }
 		
 			int dom_len = BitConverterLE.ToUInt16 (message, 28);
@@ -94,7 +95,7 @@ namespace Nancy.Authentication.Ntlm.Protocol
 
 		string DecodeString (byte[] buffer, int offset, int len)
 		{
-            if ((Flags & NtlmFlags.NegotiateUnicode) != 0)
+            if ((Flags & Common.NtlmFlags.NegotiateUnicode) != 0)
             {
                 return Encoding.Unicode.GetString(buffer, offset, len);
             }
