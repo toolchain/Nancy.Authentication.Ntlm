@@ -114,6 +114,13 @@
                                                     Sessions[module.Request.Cookies["NTLM"]].ResetHandles();
                                                     Sessions[module.Request.Cookies["NTLM"]].UpdatePresence();
 
+                                                    // Create IUserIdentity and assign it to the current context
+                                                    module.Context.CurrentUser = new NtlmIdentity() 
+                                                    { 
+                                                        UserName = type3Message.Username, 
+                                                        Domain = type3Message.Domain 
+                                                    };
+
                                                     // Authorization successful 
                                                     return null;
                                                 }
